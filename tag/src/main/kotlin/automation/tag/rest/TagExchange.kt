@@ -17,8 +17,13 @@ class TagRequest(
     var group: String?
 )
 
+class TagProducedRequest(
+    @NotNull
+    var dataProduced: ZonedDateTime?
+)
+
 class TagResponse(
-    val id: String,
+    val id: Long,
     val item: ItemResponse,
     val quantity: Int,
     val created: ZonedDateTime,

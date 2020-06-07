@@ -3,7 +3,6 @@ package automation.item.rest
 import automation.item.domain.Item
 import automation.item.domain.ItemService
 import org.springframework.http.HttpStatus
-import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono

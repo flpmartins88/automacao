@@ -21,17 +21,27 @@ class TagController(private val tagService: TagService) {
     fun getAll() = tagService.findAll().toResponse()
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: String): Mono<TagResponse> =
+    fun get(@PathVariable id: Long): Mono<TagResponse> =
         tagService.find(id).toResponse()
 
+    @PostMapping("/{id}/produced")
+    fun markAsProduced(@PathVariable id: Long, @RequestBody tagProduced: TagProducedRequest): Mono<TagResponse> =
+        tagService.markAsProduced(id, tagProduced).toResponse()
 }
 
 private fun Flux<Tag>.toResponse() = this.map { it.toResponse() }
 
 private fun Mono<Tag>.toResponse() = this.map { it.toResponse() }
 
-private fun Tag.toResponse() =
-    TagResponse(this.id, this.item.toItemResponse(), this.quantity, this.created, this.processed, this.canceled, this.group)
+private fun Tag.toResponse() = TagResponse(
+    this.id!!,
+    this.item.toItemResponse(),
+    this.quantity,
+    this.created,
+    this.produced,
+    this.canceled,
+    this.group
+)
 
 private fun Item.toItemResponse() =
     ItemResponse(this.id, this.name)

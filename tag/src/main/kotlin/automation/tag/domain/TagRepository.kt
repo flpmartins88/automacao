@@ -1,5 +1,5 @@
 package automation.tag.domain
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository
+import org.springframework.data.jpa.repository.JpaRepository
 
-interface TagRepository : ReactiveMongoRepository<Tag, String>
+interface TagRepository : JpaRepository<Tag, Long>

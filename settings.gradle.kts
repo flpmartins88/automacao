@@ -1,3 +1,3 @@
 rootProject.name = "automacao"
 
-include("tag", "item")
+include("tag", "item", "production", "commons")

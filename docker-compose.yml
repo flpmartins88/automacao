@@ -16,6 +16,7 @@ services:
     image: automacao/tag-service
     depends_on:
       - mongo
+      - localstack
     ports:
       - 8092:8092
     environment:
@@ -43,3 +44,47 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: root
+
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4576:4576"
+      - "8080:8080"
+    environment:
+      - SERVICES=sqs,sns
+
+  setup-resources:
+    image: amazon/aws-cli
+    environment:
+      - AWS_ACCESS_KEY_ID=secret-key-id
+      - AWS_SECRET_ACCESS_KEY=secret-access-key
+      - AWS_DEFAULT_REGION=us-east-1
+    entrypoint: /bin/sh -c
+    command: >
+      "
+        sleep 10;
+
+        aws --endpoint-url=http://localstack:4575 \
+          sns create-topic \
+            --name=tag_events
+      "
+    depends_on:
+      - localstack
+
+#        aws --endpoint-url=http://localstack:4576 \
+#          sqs create-queue \
+#            --queue-name=tag_produced
+#
+#        aws --endpoint-url=http://localstack:4576 \
+#          sqs create-queue \
+#            --queue-name=tag_canceled
+
+  mysql:
+    image: mysql/mysql-server
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_HOST=%
+    volumes:
+      - ./data/setup-database.sql:/docker-entrypoint-initdb.d/setup-database.sql

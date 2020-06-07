@@ -2,6 +2,34 @@ server:
   port: 8092
 
 spring:
+  datasource:
+    username: tag
+    password: tag
+    url: jdbc:mysql://localhost:3306/tag_db
   jackson:
     default-property-inclusion: non_null
     property-naming-strategy: SNAKE_CASE
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+
+cloud:
+  aws:
+    credentials:
+      access-key:
+      secret-key:
+      instance-profile: false
+    region:
+      static: us-east-1
+    stack:
+      auto: false
+
+
+aws:
+  url: http://localhost:4576
+  sqs:
+    queue:
+      tag-produced: tag_produced
+      tag-canceled: tag_canceled

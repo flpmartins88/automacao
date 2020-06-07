@@ -1,0 +1,19 @@
+server:
+  port: 8094
+cloud:
+  aws:
+    credentials:
+      access-key:
+      secret-key:
+      instance-profile: false
+    region:
+      static: us-east-1
+    stack:
+      auto: false
+
+
+aws:
+  url: http://localhost:4576
+  sqs:
+    queue:
+      tag-produced: tag_produced

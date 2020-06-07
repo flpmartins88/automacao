@@ -1,11 +1,12 @@
 package automation.tag.domain
 
-import automation.tag.service.ItemNotFoundException
+import automation.tag.rest.TagProducedRequest
 import automation.tag.service.ItemService
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import reactor.kotlin.core.publisher.switchIfEmpty
+import reactor.kotlin.core.publisher.toFlux
 import automation.tag.service.Item as ItemVO
 
 @Service
@@ -25,17 +26,23 @@ class TagService(
      */
     fun create(item: String, quantity: Int, group: String?): Mono<Tag> =
         itemService.findItem(item)
-//            .switchIfEmpty { Mono.error(ItemNotFoundException(item)) }
             .createTag(quantity, group)
             .saveTag()
 
-    fun findAll(): Flux<Tag> = tagRepository.findAll()
+    fun findAll(): Flux<Tag> =
+        tagRepository.findAll().toFlux()
 
-    fun find(id: String): Mono<Tag> =
-        tagRepository.findById(id)
+    fun find(id: Long): Mono<Tag> =
+        Mono.justOrEmpty(tagRepository.findByIdOrNull(id))
 
     private fun Mono<Tag>.saveTag() =
-        this.flatMap { tagRepository.save(it) }
+        this.map { tagRepository.save(it) }
+
+    fun markAsProduced(id: Long, tagProduced: TagProducedRequest): Mono<Tag> =
+        Mono.justOrEmpty(this.tagRepository.findByIdOrNull(id))
+            .switchIfEmpty(Mono.error(TagNotFoundException(id)))
+            .doOnNext { tag -> tag.markAsProduced(tagProduced.dataProduced!!) }
+            .map { tag -> tagRepository.save(tag) }
 
 }
 
