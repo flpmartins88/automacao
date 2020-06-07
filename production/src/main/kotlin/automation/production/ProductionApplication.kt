@@ -1,6 +1,6 @@
 package automation.production
 
-import automation.dto.TagProduced
+import automation.TagProduced
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication

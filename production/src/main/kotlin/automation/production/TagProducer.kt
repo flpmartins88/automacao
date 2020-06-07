@@ -1,7 +1,6 @@
 package automation.production
 
-import automation.dto.TagProduced
-import org.springframework.beans.factory.annotation.Autowired
+import automation.TagProduced
 import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate
 import org.springframework.stereotype.Service
 

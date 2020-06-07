@@ -38,6 +38,7 @@ dependencies {
     }
     testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
     testImplementation("io.projectreactor:reactor-test")
+    testRuntimeOnly("com.h2database:h2")
 }
 
 extra["springCloudVersion"] = "Hoxton.SR4"
