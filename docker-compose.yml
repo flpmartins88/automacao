@@ -88,3 +88,10 @@ services:
       - MYSQL_ROOT_HOST=%
     volumes:
       - ./data/setup-database.sql:/docker-entrypoint-initdb.d/setup-database.sql
+
+  frontend:
+    build:
+      context: frontend/
+      dockerfile: Dockerfile
+    ports:
+      - '4200:80'
