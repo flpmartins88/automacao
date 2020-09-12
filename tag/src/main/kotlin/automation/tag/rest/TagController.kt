@@ -27,6 +27,7 @@ class TagController(private val tagService: TagService) {
     @PostMapping("/{id}/produced")
     fun markAsProduced(@PathVariable id: Long, @RequestBody tagProduced: TagProducedRequest): Mono<TagResponse> =
         tagService.markAsProduced(id, tagProduced).toResponse()
+
 }
 
 private fun Flux<Tag>.toResponse() = this.map { it.toResponse() }
