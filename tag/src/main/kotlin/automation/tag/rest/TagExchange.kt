@@ -14,7 +14,10 @@ class TagRequest(
     @Max(1000)
     var quantity: Int? = 1,
 
-    var group: String?
+    var group: String?,
+
+    @Min(1)
+    var numberOfTags: Int = 1
 )
 
 class TagProducedRequest(

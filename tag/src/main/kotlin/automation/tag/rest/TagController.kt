@@ -13,8 +13,8 @@ import javax.validation.Valid
 class TagController(private val tagService: TagService) {
 
     @PostMapping
-    fun create(@Valid @RequestBody tagRequest: TagRequest): Mono<TagResponse> =
-        tagService.create(tagRequest.item!!, tagRequest.quantity!!, tagRequest.group)
+    fun create(@Valid @RequestBody tagRequest: TagRequest): Flux<TagResponse> =
+        tagService.create(tagRequest.item!!, tagRequest.quantity!!, tagRequest.group, tagRequest.numberOfTags)
             .toResponse()
 
     @GetMapping
@@ -30,12 +30,11 @@ class TagController(private val tagService: TagService) {
 }
 
 private fun Flux<Tag>.toResponse() = this.map { it.toResponse() }
-
 private fun Mono<Tag>.toResponse() = this.map { it.toResponse() }
 
 private fun Tag.toResponse() = TagResponse(
     this.id!!,
-    this.item.toItemResponse(),
+    this.item.toResponse(),
     this.quantity,
     this.created,
     this.produced,
@@ -43,5 +42,6 @@ private fun Tag.toResponse() = TagResponse(
     this.group
 )
 
-private fun Item.toItemResponse() =
-    ItemResponse(this.id, this.name)
+private fun Item.toResponse() = ItemResponse(
+    this.id, this.name
+)

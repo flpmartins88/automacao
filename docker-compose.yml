@@ -16,7 +16,6 @@ services:
     image: automacao/tag-service
     depends_on:
       - mongo
-      - localstack
     ports:
       - 8092:8092
     environment:
@@ -45,39 +44,16 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: root
 
-  localstack:
-    image: localstack/localstack
+  rabbit:
+    image: rabbitmq:3-management-alpine
     ports:
-      - "4576:4576"
-      - "8080:8080"
+      - 5672:5672
+      - 15692:15692
+      - 15672:15672
+#      15691/tcp, 15692/tcp, 25672/tcp, 4369/tcp, 5671/tcp, 5672/tcp
     environment:
-      - SERVICES=sqs,sns
-
-  setup-resources:
-    image: amazon/aws-cli
-    environment:
-      - AWS_ACCESS_KEY_ID=secret-key-id
-      - AWS_SECRET_ACCESS_KEY=secret-access-key
-      - AWS_DEFAULT_REGION=us-east-1
-    entrypoint: /bin/sh -c
-    command: >
-      "
-        sleep 10;
-
-        aws --endpoint-url=http://localstack:4575 \
-          sns create-topic \
-            --name=tag_events
-      "
-    depends_on:
-      - localstack
-
-#        aws --endpoint-url=http://localstack:4576 \
-#          sqs create-queue \
-#            --queue-name=tag_produced
-#
-#        aws --endpoint-url=http://localstack:4576 \
-#          sqs create-queue \
-#            --queue-name=tag_canceled
+      - RABBITMQ_DEFAULT_USER=rabbit
+      - RABBITMQ_DEFAULT_PASS=rabbit
 
   mysql:
     image: mysql/mysql-server
@@ -88,6 +64,106 @@ services:
       - MYSQL_ROOT_HOST=%
     volumes:
       - ./data/setup-database.sql:/docker-entrypoint-initdb.d/setup-database.sql
+
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.5.1
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - 2181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka-broker:
+    image: confluentinc/cp-kafka:5.5.1
+    hostname: kafka-broker
+    container_name: kafka-broker
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+      - 9092:9092
+      - 9101:9101
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_JMX_PORT: 9101
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:5.5.1
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      - zookeeper
+      - kafka-broker
+    ports:
+      - 8081:8081
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
+
+  rest-proxy:
+    image: confluentinc/cp-kafka-rest:5.5.1
+    depends_on:
+      - zookeeper
+      - kafka-broker
+      - schema-registry
+    ports:
+      - 8082:8082
+    hostname: rest-proxy
+    container_name: rest-proxy
+    environment:
+      KAFKA_REST_HOST_NAME: rest-proxy
+      KAFKA_REST_BOOTSTRAP_SERVERS: 'kafka-broker:29092'
+      KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
+      KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:5.5.1
+    hostname: control-center
+    container_name: control-center
+    depends_on:
+      - zookeeper
+      - kafka-broker
+      - schema-registry
+    ports:
+      - 9021:9021
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka-broker:29092'
+      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+      PORT: 9021
+
+  kafka-setup:
+    image: confluentinc/cp-kafka:5.1.1
+    hostname: kafka-setup
+    container_name: kafka-setup
+    depends_on:
+      - kafka-broker
+      - schema-registry
+    command: "
+        bash -c 'echo Waiting for Kafka to be ready... && \
+                 cub kafka-ready -b kafka-broker:29092 1 20 && \
+                 kafka-topics --create --if-not-exists \
+                     --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 \
+                     --topic tag_events
+        '
+    "
+    environment:
+      KAFKA_BROKER_ID: ignored
+      KAFKA_ZOOKEEPER_CONNECT: ignored
 
   frontend:
     build:

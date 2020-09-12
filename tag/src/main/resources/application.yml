@@ -14,22 +14,29 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: create-drop
-
-cloud:
-  aws:
-    credentials:
-      access-key:
-      secret-key:
-      instance-profile: false
-    region:
-      static: us-east-1
-    stack:
-      auto: false
-
-
-aws:
-  url: http://localhost:4576
-  sqs:
-    queue:
-      tag-produced: tag_produced
-      tag-canceled: tag_canceled
+    properties:
+      hibernate:
+        generate_statistics: true
+        order_inserts: true
+        order_updates: true
+        jdbc:
+          batch_size: 1000
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+    consumer:
+      enable-auto-commit: false
+      group-id: tag-service
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      client-id: 1
+      properties:
+        specific:
+          avro:
+            reader: true
+    listener:
+      ack-mode: manual
+    properties:
+      schema:
+        registry:
+          url: 'http://localhost:8081'

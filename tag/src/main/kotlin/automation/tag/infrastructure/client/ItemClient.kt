@@ -1,6 +1,6 @@
-package automation.tag.service.client
+package automation.tag.infrastructure.client
 
-import automation.tag.service.Item
+import automation.tag.infrastructure.Item
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 

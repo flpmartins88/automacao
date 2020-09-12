@@ -1,6 +1,6 @@
-package automation.tag.service
+package automation.tag.infrastructure
 
-import automation.tag.service.client.ItemClient
+import automation.tag.infrastructure.client.ItemClient
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 

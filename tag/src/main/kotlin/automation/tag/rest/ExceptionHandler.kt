@@ -1,6 +1,6 @@
 package automation.tag.rest
 
-import automation.tag.service.ItemNotFoundException
+import automation.tag.infrastructure.ItemNotFoundException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler

@@ -5,18 +5,19 @@ import javax.persistence.*
 
 @Entity
 class Tag(
+
     @Embedded
     @AttributeOverrides(
         AttributeOverride(name = "id", column = Column(name = "item_id")),
         AttributeOverride(name = "name", column = Column(name = "item_name"))
     )
     val item: Item,
+
     val quantity: Int,
     @Column(name = "tag_group")
     val group: String? = null
 
 ) {
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
