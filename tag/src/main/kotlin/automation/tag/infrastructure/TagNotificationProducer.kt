@@ -28,6 +28,13 @@ private fun Tag.toEvent(): TagEvent {
         .setId(this.id ?: 0)
         .setItem(item)
         .setStatus(this.getStatus().toTagStatusEvent())
+        .setQuantity(this.quantity)
+        .setGroup(this.group)
+        .setCreated(this.created.toInstant().toEpochMilli())
+        .setProduced(this.produced?.toInstant()?.toEpochMilli())
+        .setAnalyzed(this.analyzed?.toInstant()?.toEpochMilli())
+        .setShipped(this.shipped?.toInstant()?.toEpochMilli())
+        .setCanceled(this.canceled?.toInstant()?.toEpochMilli())
         .build()
 }
 
