@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toFlux
+import java.time.ZonedDateTime
 import automation.tag.infrastructure.Item as ItemVO
 
 @Service
@@ -23,6 +24,7 @@ class TagService(
      * @param item Item Id
      * @param quantity Item quantity
      * @param group Tag group if exists
+     * @param numberOfTags The number og tags to be generated
      *
      * @return A new [Tag]
      */
@@ -31,21 +33,64 @@ class TagService(
             .createTags(quantity, group, numberOfTags)
             .saveTags()
             .flatMapMany { Flux.fromIterable(it) }
-            .doOnNext { tag -> tagNotificationProducer.notifyChanges(tag) }
+            .notifyChanges()
 
     fun findAll(): Flux<Tag> =
         tagRepository.findAll().toFlux()
 
     fun find(id: Long): Mono<Tag> = Mono.justOrEmpty(tagRepository.findByIdOrNull(id))
 
+    /**
+     * Marks a tag as PRODUCED and save infos about it
+     *
+     * @param id Tag's identification
+     * @param tagProduced Infos about production
+     *
+     * @return The actual state of [Tag]
+     */
+    fun produceTag(id: Long, tagProduced: TagProducedRequest): Mono<Tag> =
+        findTag(id)
+            .doOnNext { tag -> tag.produce(tagProduced.dataProduced!!) }
+            .saveTag()
+            .notifyChanges()
+
+    fun analyzeTag(id: Long): Mono<Tag> {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     * Marks a tag as CANCELED
+     *
+     * @param id Tag's identification
+     * @param canceledDate When tag was canceled
+     *
+     * @return The actual state of [Tag]
+     */
+    fun cancelTag(id: Long, canceledDate: ZonedDateTime) =
+        findTag(id)
+            .doOnNext { tag -> tag.cancel(canceledDate) }
+            .saveTag()
+            .notifyChanges()
+
+
+    private fun findTag(id: Long) =
+        Mono.justOrEmpty(this.tagRepository.findByIdOrNull(id))
+            .switchIfEmpty(Mono.error(TagNotFoundException(id)))
+
+
+    private fun Mono<Tag>.saveTag() =
+        this.map { tag -> tagRepository.save(tag) }
+
+    private fun Flux<Tag>.notifyChanges() =
+        this.doOnNext { tag -> tagNotificationProducer.notifyChanges(tag) }
+
+    private fun Mono<Tag>.notifyChanges() =
+        this.doOnNext { tag -> tagNotificationProducer.notifyChanges(tag) }
+
+
+
     private fun Mono<List<Tag>>.saveTags(): Mono<List<Tag>> =
         this.map { tagRepository.saveAll(it) }
-
-    fun markAsProduced(id: Long, tagProduced: TagProducedRequest): Mono<Tag> =
-        Mono.justOrEmpty(this.tagRepository.findById(id))
-            .switchIfEmpty(Mono.error(TagNotFoundException(id)))
-            .doOnNext { tag -> tag.markAsProduced(tagProduced.dataProduced!!) }
-            .map { tag -> tagRepository.save(tag) }
 
 }
 

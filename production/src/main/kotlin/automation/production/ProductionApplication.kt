@@ -1,28 +1,28 @@
 package automation.production
 
-import automation.TagProduced
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import java.time.ZonedDateTime
 
 @SpringBootApplication
-class ProductionApplication(
-    private val tagProducer: TagProducer
-) : ApplicationRunner {
-    override fun run(args: ApplicationArguments?) {
+class ProductionApplication : ApplicationRunner {
+    override fun run(args: ApplicationArguments) {
+        println("Source: ")
+        args.sourceArgs.forEach { println(it) }
+        println("---------------")
+        println("Option Names: ")
+        args.optionNames.forEach { println(it) }
+        println("---------------")
+        println("Non Options: ")
+        args.nonOptionArgs.forEach { println(it) }
+        println("---------------")
 
-        println(args?.optionNames)
-
-        val tag = args?.getOptionValues("tag")?.get(0)
-
-        if (tag == null) {
-            println("tag is null")
-            return
+        if (args.containsOption("tag")) {
+            val tag = args.getOptionValues("tag")[0]
+            println("Tag: $tag")
         }
 
-        tagProducer.markTagAsProduced(TagProduced(tag, ZonedDateTime.now()))
     }
 
 }

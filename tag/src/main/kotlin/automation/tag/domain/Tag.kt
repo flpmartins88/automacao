@@ -28,7 +28,7 @@ class Tag(
     var shipped: ZonedDateTime? = null
     var canceled: ZonedDateTime? = null
 
-    fun markAsProduced(dateProduced: ZonedDateTime) {
+    fun produce(dateProduced: ZonedDateTime) {
         this.getStatus().markAsProduced(this, dateProduced)
     }
 
@@ -40,7 +40,7 @@ class Tag(
         this.getStatus().markAsShipped(this, dateShipped)
     }
 
-    fun markAsCanceled(dateCanceled: ZonedDateTime) {
+    fun cancel(dateCanceled: ZonedDateTime) {
         this.getStatus().markAsCanceled(this, dateCanceled)
     }
 
