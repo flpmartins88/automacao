@@ -1,0 +1,6 @@
+{
+  "namespace": "automation.events.tag",
+  "name": "Status",
+  "type": "enum",
+  "symbols": ["CREATED", "PRODUCED", "ANALYZED", "SHIPPED", "CANCELED"]
+}

@@ -6,7 +6,6 @@ plugins {
     kotlin("jvm") version "1.3.72"
     kotlin("plugin.spring") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
-    id("com.commercehub.gradle.plugin.avro") version "0.21.0"
 }
 
 group = "automation"
@@ -19,6 +18,8 @@ repositories {
 }
 
 dependencies {
+
+    implementation(project(":commons"))
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("mysql:mysql-connector-java")
@@ -38,7 +39,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
     implementation("org.springframework.kafka:spring-kafka")
-    implementation("org.apache.avro:avro:1.10.0")
     implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "5.5.1") {
         exclude(group = "org.slf4j")
         exclude(group = "log4j")
@@ -68,21 +68,5 @@ tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "13"
-    }
-}
-
-avro {
-    setCreateSetters(false)
-    setFieldVisibility("private")
-
-}
-
-//tasks.named("compileKotlin") {
-//    dependsOn(":generateAvroJava")
-//}
-
-sourceSets {
-    main {
-        java.srcDir("build/generated-main-avro-java")
     }
 }

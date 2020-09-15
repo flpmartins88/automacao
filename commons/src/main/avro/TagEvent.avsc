@@ -3,35 +3,9 @@
   "name": "TagEvent",
   "namespace": "automation.events.tag",
   "fields": [
-    {
-      "name": "id",
-      "type": "long"
-    },
-    {
-      "name": "item",
-      "type": {
-        "name": "Item",
-        "type": "record",
-        "fields": [
-          {
-            "name": "id",
-            "type": "string"
-          },
-          {
-            "name": "name",
-            "type": "string"
-          }
-        ]
-      }
-    },
-    {
-      "name": "status",
-      "type": {
-        "name": "Status",
-        "type": "enum",
-        "symbols": ["CREATED", "PRODUCED", "ANALYZED", "SHIPPED", "CANCELED"]
-      }
-    },
+    {"name": "id", "type": "long"},
+    {"name": "item", "type": "Item"},
+    {"name": "status", "type": "Status"},
     {"name": "quantity", "type": "int"},
     {"name": "group",    "type": ["null", "string"]},
     {"name": "created",  "type": "long", "logicalType": "timestamp-millis"},
