@@ -48,6 +48,8 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
 
+    testImplementation("org.springframework.kafka:spring-kafka-test")
+
     testImplementation("io.projectreactor:reactor-test")
     testRuntimeOnly("com.h2database:h2")
 }

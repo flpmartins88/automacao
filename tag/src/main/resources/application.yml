@@ -31,12 +31,8 @@ spring:
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       client-id: 1
       properties:
-        specific:
-          avro:
-            reader: true
+        specific.avro.reader: true
     listener:
       ack-mode: manual
     properties:
-      schema:
-        registry:
-          url: 'http://localhost:8081'
+      schema.registry.url: 'http://localhost:8081'
