@@ -1,21 +1,22 @@
-package automation.tag.infrastructure
+package automation.tag.rest
 
+import automation.tag.domain.Tag
+import automation.tag.domain.TagRepository
+import automation.tag.infrastructure.Item
 import automation.tag.infrastructure.client.ItemClient
-import automation.tag.rest.TagRequest
-import automation.tag.rest.TagResponse
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
@@ -31,7 +32,7 @@ import java.util.*
 const val TAG_EVENTS_TOPIC = "tag_events"
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EmbeddedKafka(
     topics = [TAG_EVENTS_TOPIC],
     partitions = 1,
@@ -40,7 +41,7 @@ const val TAG_EVENTS_TOPIC = "tag_events"
 @DirtiesContext
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureWebTestClient
-internal class TagNotificationProducerTest {
+internal class TagControllerTest {
 
     @Autowired
     private lateinit var webTestClient: WebTestClient
@@ -50,6 +51,9 @@ internal class TagNotificationProducerTest {
 
     @MockBean
     lateinit var itemClient: ItemClient
+
+    @Autowired
+    lateinit var tagRepository: TagRepository
 
     private lateinit var consumer: Consumer<String, SpecificRecord>
 
@@ -71,7 +75,7 @@ internal class TagNotificationProducerTest {
     }
 
     @Test
-    fun shouldSendEventsWhenTagIsCreated() {
+    fun create() {
         val item = Item(id = UUID.randomUUID().toString(), name = "Any name")
 
         Mockito.`when`(itemClient.getItem(item.id)).thenReturn(Mono.just(item))
@@ -91,7 +95,40 @@ internal class TagNotificationProducerTest {
         val replies = KafkaTestUtils.getRecords(consumer)
 
         assertEquals(request.numberOfTags, replies.count(), "Mensagens geradas")
+    }
+
+    @Test
+    fun getAll() {
+        webTestClient.get()
+            .uri("/tags")
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().is2xxSuccessful
+            .expectBodyList(TagResponse::class.java)
+    }
+
+    @Test
+    fun get() {
+        val tag = tagRepository.save(Tag(
+            item = automation.tag.domain.Item(id=UUID.randomUUID().toString(), name="Qualquer Coisa"),
+            quantity = 1,
+            group = null
+        ))
+
+        webTestClient.get()
+            .uri("/tags/${tag.id}")
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.id").isEqualTo(tag.id!!)
+            .jsonPath("$.item.id").isEqualTo(tag.item.id)
+            .jsonPath("$.quantity").isEqualTo(tag.quantity)
+            .jsonPath("$.group").doesNotExist()
 
     }
 
+    @Test
+    fun markAsProduced() {
+    }
 }

@@ -5,12 +5,13 @@ import automation.events.tag.Status
 import automation.events.tag.TagEvent
 import automation.tag.domain.Tag
 import automation.tag.domain.TagStatus
+import org.apache.avro.specific.SpecificRecord
 import org.springframework.kafka.core.KafkaTemplate
 
 import org.springframework.stereotype.Service
 
 @Service
-class TagNotificationProducer(private val kafkaTemplate: KafkaTemplate<String, TagEvent>) {
+class TagNotificationProducer(private val kafkaTemplate: KafkaTemplate<String, SpecificRecord>) {
 
     fun notifyChanges(tag: Tag) {
         this.kafkaTemplate.send("tag_events", tag.toEvent())

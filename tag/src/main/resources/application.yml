@@ -36,3 +36,6 @@ spring:
       ack-mode: manual
     properties:
       schema.registry.url: 'http://localhost:8081'
+
+services:
+  item: http://localhost:8091/items
