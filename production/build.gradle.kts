@@ -27,8 +27,13 @@ dependencies {
     implementation(project(":commons"))
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+    //implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+
+    //implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
+    // Reactive version of feign
+    implementation("com.playtika.reactivefeign:feign-reactor-spring-cloud-starter:2.0.22")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
@@ -38,19 +43,16 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
-    implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging")
-
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
 
-    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
     testImplementation("io.projectreactor:reactor-test")
 }
 
-extra["springCloudVersion"] = "Hoxton.SR4"
+extra["springCloudVersion"] = "Hoxton.SR8"
 
 dependencyManagement {
     imports {

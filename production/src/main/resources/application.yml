@@ -1,19 +1,37 @@
 server:
   port: 8094
-cloud:
-  aws:
-    credentials:
-      access-key:
-      secret-key:
-      instance-profile: false
-    region:
-      static: us-east-1
-    stack:
-      auto: false
+
+spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+reactive:
+  feign:
+    cloud:
+      enabled: false
+    ribbon:
+      enabled: false
+    hystrix:
+      enabled: false
+    logger:
+      enabled: false
+    client:
+      config:
+        default:
+          loggerLevel: full
 
 
-aws:
-  url: http://localhost:4576
-  sqs:
-    queue:
-      tag-produced: tag_produced
+#feign:
+#  client:
+#    config:
+#      default: # nome da config, default aplica para todos (deve ser pq tem uma propriedade com o nome da config padrão que é default)
+#        loggerLevel: full
+##        connectTimeout: 5000
+##        readTimeout: 5000
+
+logging:
+  level:
+    automation.production: DEBUG
+
+url:
+  tag: http://localhost:8092

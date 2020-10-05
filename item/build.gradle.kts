@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -11,7 +13,7 @@ group = "automation"
 version = "0.0.1"
 java.sourceCompatibility = JavaVersion.VERSION_14
 
-val developmentOnly by configurations.creating
+val developmentOnly: Configuration by configurations.creating
 configurations {
     runtimeClasspath {
         extendsFrom(developmentOnly)
@@ -26,6 +28,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+
+    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
@@ -45,6 +49,14 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
 }
 
+extra["springCloudVersion"] = "Hoxton.SR8"
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+    }
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
@@ -55,5 +67,3 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "13"
     }
 }
-
-

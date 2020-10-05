@@ -15,7 +15,8 @@ services:
     build: tag/
     image: automacao/tag-service
     depends_on:
-      - mongo
+      - mysql
+      - kafka-broker
     ports:
       - 8092:8092
     environment:
@@ -44,16 +45,16 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: root
 
-  rabbit:
-    image: rabbitmq:3-management-alpine
-    ports:
-      - 5672:5672
-      - 15692:15692
-      - 15672:15672
-#      15691/tcp, 15692/tcp, 25672/tcp, 4369/tcp, 5671/tcp, 5672/tcp
-    environment:
-      - RABBITMQ_DEFAULT_USER=rabbit
-      - RABBITMQ_DEFAULT_PASS=rabbit
+#  rabbit:
+#    image: rabbitmq:3-management-alpine
+#    ports:
+#      - 5672:5672
+#      - 15692:15692
+#      - 15672:15672
+##      15691/tcp, 15692/tcp, 25672/tcp, 4369/tcp, 5671/tcp, 5672/tcp
+#    environment:
+#      - RABBITMQ_DEFAULT_USER=rabbit
+#      - RABBITMQ_DEFAULT_PASS=rabbit
 
   mysql:
     image: mysql/mysql-server
@@ -110,21 +111,21 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
 
-  rest-proxy:
-    image: confluentinc/cp-kafka-rest:5.5.1
-    depends_on:
-      - zookeeper
-      - kafka-broker
-      - schema-registry
-    ports:
-      - 8082:8082
-    hostname: rest-proxy
-    container_name: rest-proxy
-    environment:
-      KAFKA_REST_HOST_NAME: rest-proxy
-      KAFKA_REST_BOOTSTRAP_SERVERS: 'kafka-broker:29092'
-      KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
-      KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+#  rest-proxy:
+#    image: confluentinc/cp-kafka-rest:5.5.1
+#    depends_on:
+#      - zookeeper
+#      - kafka-broker
+#      - schema-registry
+#    ports:
+#      - 8082:8082
+#    hostname: rest-proxy
+#    container_name: rest-proxy
+#    environment:
+#      KAFKA_REST_HOST_NAME: rest-proxy
+#      KAFKA_REST_BOOTSTRAP_SERVERS: 'kafka-broker:29092'
+#      KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
+#      KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
 
   control-center:
     image: confluentinc/cp-enterprise-control-center:5.5.1

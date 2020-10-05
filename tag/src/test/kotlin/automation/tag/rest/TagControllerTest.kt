@@ -7,12 +7,9 @@ import automation.tag.infrastructure.client.ItemClient
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.TestInstance
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -120,11 +117,14 @@ internal class TagControllerTest {
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk
+//            .expectBody(TagResponse::class.java)
+//            .value { it -> Assertions.assertThat(it.id).isEqualTo(tag.id) }
             .expectBody()
             .jsonPath("$.id").isEqualTo(tag.id!!)
             .jsonPath("$.item.id").isEqualTo(tag.item.id)
             .jsonPath("$.quantity").isEqualTo(tag.quantity)
             .jsonPath("$.group").doesNotExist()
+
 
     }
 

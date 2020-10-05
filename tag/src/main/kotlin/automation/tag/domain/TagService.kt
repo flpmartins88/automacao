@@ -50,7 +50,8 @@ class TagService(
      */
     fun produceTag(id: Long, tagProduced: TagProducedRequest): Mono<Tag> =
         findTag(id)
-            .doOnNext { tag -> tag.produce(tagProduced.dataProduced!!) }
+            .map { tag -> tag.produce(tagProduced.dataProduced!!); tag }
+//            .doOnNext { tag -> tag.produce(tagProduced.dataProduced!!) }
             .saveTag()
             .notifyChanges()
 

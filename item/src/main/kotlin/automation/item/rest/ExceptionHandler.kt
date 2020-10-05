@@ -18,6 +18,7 @@ class ExceptionHandler {
 
     @ExceptionHandler(ServerWebInputException::class)
     fun handleBaseException(exception: ServerWebInputException): ResponseEntity<Errors> {
+        log.error("Erro de validação", exception)
 
         val message = when(exception.status) {
             HttpStatus.BAD_REQUEST -> "invalid body"

@@ -3,6 +3,7 @@ package automation.tag.rest
 import automation.tag.domain.Item
 import automation.tag.domain.Tag
 import automation.tag.domain.TagService
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -11,6 +12,7 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/tags")
 class TagController(private val tagService: TagService) {
+
 
     @PostMapping
     fun create(@Valid @RequestBody tagRequest: TagRequest): Flux<TagResponse> =
@@ -24,7 +26,7 @@ class TagController(private val tagService: TagService) {
     fun get(@PathVariable id: Long): Mono<TagResponse> =
         tagService.find(id).toResponse()
 
-    @PostMapping("/{id}/produced")
+    @PostMapping("/{id}/produced", consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun markAsProduced(@PathVariable id: Long, @RequestBody tagProduced: TagProducedRequest): Mono<TagResponse> =
         tagService.produceTag(id, tagProduced).toResponse()
 
