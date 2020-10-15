@@ -166,10 +166,10 @@ services:
       KAFKA_BROKER_ID: ignored
       KAFKA_ZOOKEEPER_CONNECT: ignored
 
-  frontend:
-    build:
-      context: frontend/
-      dockerfile: Dockerfile
-    image: automacao/frontend
-    ports:
-      - '4200:80'
+#  frontend:
+#    build:
+#      context: frontend/
+#      dockerfile: Dockerfile
+#    image: automacao/frontend
+#    ports:
+#      - '4200:80'
