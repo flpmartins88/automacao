@@ -1,28 +1,26 @@
-//plugins {
-//    java
-//    kotlin("jvm") version "1.3.71"
-//}
+plugins {
+    kotlin("jvm")           version "1.4.10" apply false
+    kotlin("plugin.spring") version "1.4.10" apply false
+    kotlin("plugin.jpa")    version "1.4.10" apply false
 
-//group = "org.example"
-//version = "1.0.0"
-//
-//repositories {
-//    mavenCentral()
-//}
+    id("org.springframework.boot")        version "2.3.4.RELEASE"  apply false
+    id("io.spring.dependency-management") version "1.0.10.RELEASE" apply false
 
-//dependencies {
-//    implementation(kotlin("stdlib-jdk8"))
-//    testCompile("junit", "junit", "4.12")
-//}
+    id("com.commercehub.gradle.plugin.avro") version "0.21.0" apply false
+}
 
-//configure<JavaPluginConvention> {
-//    sourceCompatibility = JavaVersion.VERSION_14
-//}
-//tasks {
-//    compileKotlin {
-//        kotlinOptions.jvmTarget = "13"
-//    }
-//    compileTestKotlin {
-//        kotlinOptions.jvmTarget = "13"
-//    }
-//}
+group = "automation"
+version = "1.0.0"
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven(url="https://packages.confluent.io/maven/")
+    }
+}
+
+subprojects {
+
+    // TODO: Descobrir como configurar o java e o kotlin aqui
+    // O padrão não é possível por que o plugin não foi aplicado nesse arquivo
+}
