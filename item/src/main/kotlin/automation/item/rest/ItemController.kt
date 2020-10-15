@@ -10,16 +10,13 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/items")
-class ItemController(
-    private val itemService: ItemService
-) {
+class ItemController(private val itemService: ItemService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(@RequestBody @Valid itemRequest: ItemRequest) =
         itemService.create(itemRequest.toDomain())
             .toResponse()
-
 
     @PutMapping("/{id}")
     fun update(@PathVariable id: String, @Valid @RequestBody itemRequest: ItemRequest): Mono<ItemResponse> {
