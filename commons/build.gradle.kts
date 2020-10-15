@@ -2,15 +2,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
-    kotlin("jvm") version "1.3.72"
-    id("com.commercehub.gradle.plugin.avro") version "0.21.0"
+    kotlin("jvm")
+    id("com.commercehub.gradle.plugin.avro")
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_13
-
-repositories {
-    mavenCentral()
-}
+java.sourceCompatibility = JavaVersion.VERSION_14
+java.targetCompatibility = JavaVersion.VERSION_14
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -20,7 +17,7 @@ dependencies {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "13"
+        jvmTarget = "14"
     }
 }
 
@@ -35,7 +32,7 @@ sourceSets {
     }
 }
 
-val instrumentedJars by configurations.creating {
+val instrumentedJars: Configuration by configurations.creating {
     isCanBeConsumed = true
     isCanBeResolved = false
     attributes {
