@@ -10,17 +10,21 @@ plugins {
 version = "0.0.1"
 
 java.sourceCompatibility = JavaVersion.VERSION_15
-java.targetCompatibility = JavaVersion.VERSION_15
+
+configurations {
+    compileOnly {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
+}
 
 dependencies {
-
-    implementation(project(":commons"))
-
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+
     implementation("org.springframework.boot:spring-boot-starter-web")
+
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
@@ -35,6 +39,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
+
 }
 
 extra["springCloudVersion"] = "Hoxton.SR8"
@@ -55,5 +60,3 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "14"
     }
 }
-
-

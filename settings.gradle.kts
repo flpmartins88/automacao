@@ -1,6 +1,6 @@
 rootProject.name = "automacao"
 
-include("tag", "item", "production", "commons")
+include("tag", "item", "production", "stock", "commons", "auth")
 
 pluginManagement {
     repositories {

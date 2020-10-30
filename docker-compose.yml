@@ -66,7 +66,6 @@ services:
     volumes:
       - ./data/setup-database.sql:/docker-entrypoint-initdb.d/setup-database.sql
 
-
   zookeeper:
     image: confluentinc/cp-zookeeper:5.5.1
     hostname: zookeeper
@@ -159,7 +158,15 @@ services:
                  cub kafka-ready -b kafka-broker:29092 1 20 && \
                  kafka-topics --create --if-not-exists \
                      --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 \
-                     --topic tag_events
+                     --topic tag_events \
+                 && \
+                 kafka-topics --create --if-not-exists \
+                     --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 \
+                     --topic item_created
+                 && \
+                kafka-topics --create --if-not-exists \
+                    --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 \
+                    --topic item_produced
         '
     "
     environment:

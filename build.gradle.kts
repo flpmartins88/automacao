@@ -20,7 +20,6 @@ allprojects {
 }
 
 subprojects {
-
     // TODO: Descobrir como configurar o java e o kotlin aqui
     // O padrão não é possível por que o plugin não foi aplicado nesse arquivo
 }

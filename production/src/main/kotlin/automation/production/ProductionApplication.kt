@@ -1,39 +1,36 @@
 package automation.production
 
-import feign.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import reactivefeign.spring.config.EnableReactiveFeignClients
+import org.springframework.cloud.openfeign.EnableFeignClients
 import java.time.ZonedDateTime
 
-@EnableReactiveFeignClients
+@EnableFeignClients
 @SpringBootApplication
 class ProductionApplication(
     private val tagClient: TagClient
 ) : ApplicationRunner {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     override fun run(args: ApplicationArguments) {
         if (args.containsOption("tag")) {
             val tag = args.getOptionValues("tag")[0]
             println("Tag: $tag")
 
-            tagClient.markAsProduced(tag, TagProducedRequest(ZonedDateTime.now()))
-                .subscribe(::println) { error -> println("Error: $error") }
+            try {
+                val response = tagClient.markAsProduced(tag, TagProducedRequest(ZonedDateTime.now()))
+                logger.info("Tag $tag processed. Result: $response")
+            } catch (e: Exception) {
+                logger.error("Error processing tag: $tag", e)
+            }
+
         }
     }
 
-}
-
-@Configuration
-class Config {
-
-    @Bean
-    fun feignLoggerLevel(): Logger.Level {
-        return Logger.Level.FULL
-    }
 }
 
 fun main(args: Array<String>) {
