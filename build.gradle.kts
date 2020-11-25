@@ -23,3 +23,21 @@ subprojects {
     // TODO: Descobrir como configurar o java e o kotlin aqui
     // O padrão não é possível por que o plugin não foi aplicado nesse arquivo
 }
+
+//class DockerPlugin : Plugin<Project> {
+//    override fun apply(target: Project) { decide gastar dinhei
+////        project.task("createDockerFile") {
+////            doFirst {
+////                println("Generating DockerFile for projects")
+////            }
+////        }
+//
+//        project.task("buildDocker") {
+//            doFirst {
+//                println("Building docker images")
+//            }
+//        }
+//    }
+//}
+//
+//apply<DockerPlugin>()

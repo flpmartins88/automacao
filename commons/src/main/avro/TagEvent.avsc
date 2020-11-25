@@ -4,7 +4,7 @@
   "namespace": "automation.events.tag",
   "fields": [
     {"name": "id", "type": "long"},
-    {"name": "item", "type": "Item"},
+    {"name": "item", "type": "automation.events.item.ItemEvent"},
     {"name": "status", "type": "Status"},
     {"name": "quantity", "type": "int"},
     {"name": "group",    "type": ["null", "string"]},

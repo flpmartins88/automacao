@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import java.time.ZonedDateTime
-import javax.validation.constraints.NotNull
 
 @FeignClient(name = "TagClient", url = "\${url.tag}")
 interface TagClient {
@@ -17,7 +16,6 @@ interface TagClient {
 }
 
 class TagProducedRequest(
-    @NotNull
     var dataProduced: ZonedDateTime?
 )
 

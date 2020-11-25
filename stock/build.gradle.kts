@@ -18,9 +18,18 @@ configurations {
 }
 
 dependencies {
+    implementation(project(":commons"))
+
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "5.5.1") {
+        exclude(group = "org.slf4j")
+        exclude(group = "log4j")
+    }
 
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
@@ -28,11 +37,8 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -40,6 +46,7 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
 
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 extra["springCloudVersion"] = "Hoxton.SR8"
@@ -60,3 +67,8 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "14"
     }
 }
+
+// https://docs.spring.io/spring-boot/docs/2.3.4.RELEASE/gradle-plugin/reference/html/#build-image
+//tasks.getByName<BootBuildImage>("bootBuildImage") {
+//    imageName = ""
+//}

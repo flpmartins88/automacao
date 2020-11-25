@@ -1,6 +1,6 @@
 package automation.tag.infrastructure
 
-import automation.events.tag.Item
+import automation.events.item.Item
 import automation.events.tag.Status
 import automation.events.tag.TagEvent
 import automation.tag.domain.Tag

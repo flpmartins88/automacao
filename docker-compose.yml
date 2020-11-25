@@ -153,22 +153,26 @@ services:
     depends_on:
       - kafka-broker
       - schema-registry
-    command: "
-        bash -c 'echo Waiting for Kafka to be ready... && \
-                 cub kafka-ready -b kafka-broker:29092 1 20 && \
-                 kafka-topics --create --if-not-exists \
+    entrypoint: /bin/sh -c
+    command: >
+      "
+        echo Waiting for Kafka to be ready...;
+
+        cub kafka-ready -b kafka-broker:29092 1 20
+
+        kafka-topics --create --if-not-exists \
                      --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 \
                      --topic tag_events \
-                 && \
-                 kafka-topics --create --if-not-exists \
+
+        kafka-topics --create --if-not-exists \
                      --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 \
                      --topic item_created
-                 && \
-                kafka-topics --create --if-not-exists \
-                    --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 \
-                    --topic item_produced
-        '
-    "
+
+        kafka-topics --create --if-not-exists \
+                     --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 \
+                     --topic item_produced
+
+      "
     environment:
       KAFKA_BROKER_ID: ignored
       KAFKA_ZOOKEEPER_CONNECT: ignored

@@ -1,6 +1,7 @@
 {
-  "namespace": "automation.events.tag",
-  "name": "Item", "type": "record",
+  "namespace": "automation.events.item",
+  "name": "ItemEvent",
+  "type": "record",
   "fields": [
     {"name": "id", "type": "string"},
     {"name": "name", "type": "string"}
