@@ -1,0 +1,18 @@
+spring:
+  kafka:
+    consumer:
+      group-id: stock-consumer
+      key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      enable-auto-commit: false
+      properties:
+        specific.avro.reader: true
+    properties:
+      schema.registry.url: http://localhost:8080
+    listener:
+      ack-mode: manual
+
+kafka:
+  topics:
+    item_created: item_created
+    item_produced: item_produced

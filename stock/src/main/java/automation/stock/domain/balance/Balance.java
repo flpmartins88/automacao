@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 
 /**
- * Representa o saldo item no estoque
+ * Representa o saldo do item no estoque
  *
  * @author Felipe Martins
  */

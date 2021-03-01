@@ -23,7 +23,7 @@ public class ItemCreatedConsumer {
     }
 
     @Transactional
-    @KafkaListener(topics = "item_created")
+    @KafkaListener(topics = "${kafka.topics.item_created}")
     public void consumeEvent(ConsumerRecord<String, ItemEvent> record, Acknowledgment ack) {
         try {
             stockService.addNewItem(record.value().getId());
@@ -33,6 +33,7 @@ public class ItemCreatedConsumer {
             ack.acknowledge();
         } catch (Exception ex) {
             log.error("Error consuming item_created event for item id: " + record.value().getId(), ex);
+            ack.nack(1000);
         }
     }
 

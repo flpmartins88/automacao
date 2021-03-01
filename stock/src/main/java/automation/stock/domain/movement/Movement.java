@@ -15,6 +15,7 @@ public class Movement {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "production_id")
     private String productionId;
 
     private String item;

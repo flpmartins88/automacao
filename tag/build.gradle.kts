@@ -12,10 +12,10 @@ group = "automation"
 version = "0.0.1"
 java.sourceCompatibility = JavaVersion.VERSION_15
 
-repositories {
-    mavenCentral()
-    maven(url="https://packages.confluent.io/maven/")
-}
+//repositories {
+//    mavenCentral()
+//    maven(url="https://packages.confluent.io/maven/")
+//}
 
 dependencies {
 
@@ -54,7 +54,7 @@ dependencies {
     testRuntimeOnly("com.h2database:h2")
 }
 
-extra["springCloudVersion"] = "Hoxton.SR4"
+extra["springCloudVersion"] = "2020.0.0-M5"
 
 dependencyManagement {
     imports {
@@ -69,6 +69,6 @@ tasks.withType<Test> {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "14"
+        jvmTarget = "15"
     }
 }

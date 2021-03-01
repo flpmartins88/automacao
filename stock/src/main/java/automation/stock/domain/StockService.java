@@ -50,8 +50,9 @@ public class StockService {
      * @throws ItemAlreadyExists If that ID already exists
      */
     public void addNewItem(String itemId) throws ItemAlreadyExists {
-        balanceRepository.findById(itemId)
-                .orElseThrow(() -> new ItemAlreadyExists(itemId));
+        if (balanceRepository.findById(itemId).isPresent()) {
+            throw new ItemAlreadyExists(itemId);
+        }
 
         balanceRepository.save(new Balance(itemId, 0));
     }

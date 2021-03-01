@@ -184,3 +184,9 @@ services:
 #    image: automacao/frontend
 #    ports:
 #      - '4200:80'
+  proxy:
+    image: nginx
+    ports:
+    - 80:80
+    volumes:
+    - ./nginx/:/etc/nginx/conf.d/

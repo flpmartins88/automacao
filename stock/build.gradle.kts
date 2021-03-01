@@ -47,9 +47,12 @@ dependencies {
     }
 
     testImplementation("org.springframework.kafka:spring-kafka-test")
+
+    testImplementation("org.awaitility:awaitility:4.0.3")
+    testImplementation("com.h2database:h2")
 }
 
-extra["springCloudVersion"] = "Hoxton.SR8"
+extra["springCloudVersion"] = "2020.0.1"
 
 dependencyManagement {
     imports {

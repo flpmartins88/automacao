@@ -1,10 +1,10 @@
 plugins {
-    kotlin("jvm")           version "1.4.10" apply false
-    kotlin("plugin.spring") version "1.4.10" apply false
-    kotlin("plugin.jpa")    version "1.4.10" apply false
+    kotlin("jvm")           version "1.4.30" apply false
+    kotlin("plugin.spring") version "1.4.30" apply false
+    kotlin("plugin.jpa")    version "1.4.30" apply false
 
-    id("org.springframework.boot")        version "2.3.4.RELEASE"  apply false
-    id("io.spring.dependency-management") version "1.0.10.RELEASE" apply false
+    id("org.springframework.boot")        version "2.4.3"  apply false
+    id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
 
     id("com.commercehub.gradle.plugin.avro") version "0.21.0" apply false
 }
@@ -16,6 +16,7 @@ allprojects {
     repositories {
         mavenCentral()
         maven(url="https://packages.confluent.io/maven/")
+        maven(url="https://repo.spring.io/milestone")
     }
 }
 

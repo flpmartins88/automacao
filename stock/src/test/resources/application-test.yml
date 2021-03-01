@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:test
+    username: user
+    password: password
+  kafka:
+    properties:
+      schema.registry.url: mock://testUrl
+    bootstrap-servers: ${spring.embedded.kafka.brokers}

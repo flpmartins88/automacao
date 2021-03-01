@@ -24,7 +24,7 @@ public class ItemProducedConsumer {
         this.stockService = stockService;
     }
 
-    @KafkaListener(topics = "item_produced")
+    @KafkaListener(topics = "${kafka.topics.item_produced}")
     public void consumeEvent(ConsumerRecord<String, ItemProducedEvent> record, Acknowledgment ack) {
         var productionId = record.value().getProductionId();
         var itemId = record.value().getItemId();
@@ -39,6 +39,7 @@ public class ItemProducedConsumer {
             ack.acknowledge();
         } catch (ItemNotFoundException e) {
             log.error("Error adding '%d' to item '%s'".formatted(quantity, itemId), e);
+            ack.nack(1000);
         }
     }
 }
