@@ -1,5 +1,7 @@
 package automation.stock;
 
+import automation.stock.domain.balance.BalanceRepository;
+import automation.stock.domain.movement.MovementRepository;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import org.apache.avro.specific.SpecificRecord;
@@ -12,12 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -30,9 +34,19 @@ import org.springframework.test.context.ActiveProfiles;
 // Não funciona porque ele reinicia o contexto e as coisas do kafka não reiniciam adequadamente
 // fazendo com que apenas a primeira classe executada pelos testes funcione corretamente
 //@DirtiesContext
+@AutoConfigureMockMvc
 public class BaseSpringTest {
 
     private static final Logger log = LoggerFactory.getLogger(BaseSpringTest.class);
+
+    @Autowired
+    protected MockMvc mockMvc;
+
+    @Autowired
+    protected BalanceRepository balanceRepository;
+
+    @Autowired
+    protected MovementRepository movementRepository;
 
     @Autowired
     private EmbeddedKafkaBroker embeddedKafkaBroker;

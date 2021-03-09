@@ -16,12 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ItemProducedConsumerTest extends BaseSpringTest {
 
-    @Autowired
-    private BalanceRepository balanceRepository;
-
-    @Autowired
-    private MovementRepository movementRepository;
-
     @Test
     public void shouldUpdateStock() {
 
