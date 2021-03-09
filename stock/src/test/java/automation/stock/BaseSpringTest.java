@@ -6,9 +6,7 @@ import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,6 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -28,9 +25,11 @@ import org.springframework.test.context.ActiveProfiles;
         topics = { "${kafka.topics.item_created}", "${kafka.topics.item_produced}" },
         partitions = 1
 )
-@DirtiesContext
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureTestDatabase
+// Não funciona porque ele reinicia o contexto e as coisas do kafka não reiniciam adequadamente
+// fazendo com que apenas a primeira classe executada pelos testes funcione corretamente
+//@DirtiesContext
 public class BaseSpringTest {
 
     private static final Logger log = LoggerFactory.getLogger(BaseSpringTest.class);
@@ -64,7 +63,7 @@ public class BaseSpringTest {
         producer.close();
     }
 
-    void produce(String topic, String recordKey, SpecificRecord recordValue) {
+    protected void produce(String topic, String recordKey, SpecificRecord recordValue) {
         producer.send(
                 new ProducerRecord<>(topic, recordKey, recordValue),
                 (metadata, exception) -> log.info(

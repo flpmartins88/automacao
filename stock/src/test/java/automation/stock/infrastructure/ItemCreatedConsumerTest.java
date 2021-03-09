@@ -1,12 +1,12 @@
-package automation.stock;
+package automation.stock.infrastructure;
 
 import automation.events.item.ItemEvent;
+import automation.stock.BaseSpringTest;
 import automation.stock.domain.balance.BalanceRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.Duration;
 import java.util.UUID;
 
 import static org.awaitility.Awaitility.await;
@@ -17,7 +17,7 @@ public class ItemCreatedConsumerTest extends BaseSpringTest {
     private BalanceRepository balanceRepository;
 
     @Test
-    void shouldConsumeEventOfNewItem() {
+    void shouldConsumeEventOfNewItem() throws InterruptedException {
         var itemCreatedEvent = ItemEvent.newBuilder()
                 .setId(UUID.randomUUID().toString())
                 .setName("Pilha")
@@ -25,7 +25,7 @@ public class ItemCreatedConsumerTest extends BaseSpringTest {
 
         produce(itemCreatedTopic, itemCreatedEvent.getId(), itemCreatedEvent);
 
-        await().atMost(Duration.ofSeconds(5)).until(
+        await().until(
                 () -> balanceRepository.findById(itemCreatedEvent.getId()).isPresent()
         );
 

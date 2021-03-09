@@ -26,8 +26,10 @@ public class ItemCreatedConsumer {
     @KafkaListener(topics = "${kafka.topics.item_created}")
     public void consumeEvent(ConsumerRecord<String, ItemEvent> record, Acknowledgment ack) {
         try {
+            log.info("Adding new Item {}", record.value().getId());
             stockService.addNewItem(record.value().getId());
             ack.acknowledge();
+            log.info("Item {} added", record.value().getId());
         } catch (ItemAlreadyExists ex) {
             log.warn("Error consuming item_created event for item id: " + record.value().getId() + ". Item already exists");
             ack.acknowledge();

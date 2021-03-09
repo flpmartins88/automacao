@@ -28,7 +28,7 @@ public class Movement {
     // JPA :)
     protected Movement() {}
 
-    public Movement(String item, String productionId, MovementType movementType, Integer quantity, ZonedDateTime date, ZonedDateTime productionDate) {
+    public Movement(String productionId, String item, MovementType movementType, Integer quantity, ZonedDateTime date, ZonedDateTime productionDate) {
         this.item = item;
         this.productionId = productionId;
         this.type = movementType;
