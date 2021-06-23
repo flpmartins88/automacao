@@ -3,27 +3,34 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     java
     kotlin("jvm")
-    id("com.commercehub.gradle.plugin.avro")
+    id("com.github.davidmc24.gradle.plugin.avro") version "1.2.0"
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_14
-java.targetCompatibility = JavaVersion.VERSION_14
+java.sourceCompatibility = JavaVersion.VERSION_13
+java.targetCompatibility = JavaVersion.VERSION_13
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.apache.avro:avro:1.10.0")
+    implementation("org.apache.avro:avro:1.10.2+")
 }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "14"
+        jvmTarget = "13"
     }
 }
 
 avro {
-    setCreateSetters(false)
-    setFieldVisibility("private")
+    isCreateOptionalGetters.set(false)
+//    isCreateOptionalGetters.set(false)
+    isCreateSetters.set(false)
+    fieldVisibility.set("PRIVATE")
+//
+
+//    outputCharacterEncoding.set("UTF-8")
+//    stringType.set("String")
+
 }
 
 sourceSets {

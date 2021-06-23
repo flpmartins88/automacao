@@ -3,9 +3,9 @@
   "name": "ItemProducedEvent",
   "type": "record",
   "fields": [
-    {"name": "productionId", "type": "string", "logicalType":  "uuid"},
+    {"name": "productionId", "type": {"type": "string", "logicalType": "uuid"}},
     {"name": "itemId", "type": "string"},
     {"name": "quantity", "type": "int"},
-    {"name": "eventDate", "type": "long", "logicalType": "timestamp-millis"}
+    {"name": "eventDate", "type": {"type": "long", "logicalType": "timestamp-millis"}}
   ]
 }

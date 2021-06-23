@@ -5,13 +5,13 @@
   "fields": [
     {"name": "id", "type": "long"},
     {"name": "item", "type": "automation.events.item.ItemEvent"},
-    {"name": "status", "type": "Status"},
+    {"name": "status", "type": "automation.events.tag.Status"},
     {"name": "quantity", "type": "int"},
     {"name": "group",    "type": ["null", "string"]},
-    {"name": "created",  "type": "long", "logicalType": "timestamp-millis"},
-    {"name": "produced", "type": ["null", "long"], "logicalType": "timestamp-millis"},
-    {"name": "analyzed", "type": ["null", "long"], "logicalType": "timestamp-millis"},
-    {"name": "shipped",  "type": ["null", "long"], "logicalType": "timestamp-millis"},
-    {"name": "canceled", "type": ["null", "long"], "logicalType": "timestamp-millis"}
+    {"name": "created",  "type": {"type": "long", "logicalType": "timestamp-millis"}},
+    {"name": "produced", "type": ["null", {"type": "long", "logicalType": "timestamp-millis"}]},
+    {"name": "analyzed", "type": ["null", {"type": "long", "logicalType": "timestamp-millis"}]},
+    {"name": "shipped",  "type": ["null", {"type": "long", "logicalType": "timestamp-millis"}]},
+    {"name": "canceled", "type": ["null", {"type": "long", "logicalType": "timestamp-millis"}]}
   ]
 }

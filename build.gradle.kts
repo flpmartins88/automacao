@@ -5,12 +5,12 @@ plugins {
 
     id("org.springframework.boot")        version "2.4.3"  apply false
     id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
-
-    id("com.commercehub.gradle.plugin.avro") version "0.21.0" apply false
 }
 
 group = "automation"
 version = "1.0.0"
+
+extra["springCloudVersion"] = "2020.0.1"
 
 allprojects {
     repositories {
