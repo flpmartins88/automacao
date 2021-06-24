@@ -26,7 +26,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     implementation("org.springframework.kafka:spring-kafka")
-    implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "5.5.1") {
+    implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "6.2.0") {
         exclude(group = "org.slf4j")
         exclude(group = "log4j")
     }
@@ -52,7 +52,7 @@ dependencies {
     testImplementation("com.h2database:h2")
 }
 
-extra["springCloudVersion"] = "2020.0.1"
+extra["springCloudVersion"] = "2020.0.3"
 
 dependencyManagement {
     imports {

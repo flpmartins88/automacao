@@ -29,7 +29,7 @@ public class ItemProducedConsumer {
         var productionId = record.value().getProductionId();
         var itemId = record.value().getItemId();
         var quantity = record.value().getQuantity();
-        var productionDate = Instant.ofEpochMilli(record.value().getEventDate()).atZone(ZoneOffset.UTC);
+        var productionDate = record.value().getEventDate().atZone(ZoneOffset.UTC);
 
         try {
             inventoryService.save(productionId, itemId, InventoryService.OperationType.IN, quantity, productionDate);

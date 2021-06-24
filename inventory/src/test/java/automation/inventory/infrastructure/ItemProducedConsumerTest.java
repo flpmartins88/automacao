@@ -29,7 +29,7 @@ class ItemProducedConsumerTest extends BaseSpringTest {
                 .setItemId(itemEvent.getId())
                 .setProductionId(UUID.randomUUID().toString())
                 .setQuantity(10)
-                .setEventDate(ZonedDateTime.now().toInstant().toEpochMilli())
+                .setEventDate(ZonedDateTime.now().toInstant())
                 .build();
 
         produce(itemProducedTopic, itemProducedEvent.getItemId(), itemProducedEvent);

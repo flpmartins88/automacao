@@ -9,7 +9,9 @@ import java.time.ZonedDateTime;
  * @author Felipe Martins
  */
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(name = "unique_production", columnNames = {"production_id"} ) })
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "unique_production", columnNames = {"production_id"} )
+})
 public class Movement {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
