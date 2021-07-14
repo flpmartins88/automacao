@@ -10,7 +10,7 @@ plugins {
 
 group = "automation"
 version = "0.0.1"
-java.sourceCompatibility = JavaVersion.VERSION_15
+java.sourceCompatibility = JavaVersion.VERSION_16
 
 //repositories {
 //    mavenCentral()
@@ -37,6 +37,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+
+//    implementation("io.springfox:springfox-boot-starter:3.0.0")
+//    implementation("io.springfox:springfox-swagger-ui:3.0.0")
+
 
     implementation("org.springframework.kafka:spring-kafka")
     implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "5.5.1") {
@@ -69,6 +73,6 @@ tasks.withType<Test> {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "15"
+        jvmTarget = "16"
     }
 }

@@ -10,9 +10,7 @@ import reactor.core.publisher.Mono
  * @author Felipe Martins
  */
 @Service
-class ItemService(
-    private val itemRepository: ItemRepository
-) {
+class ItemService(private val itemRepository: ItemRepository) {
 
     /**
      * Adds a new Item

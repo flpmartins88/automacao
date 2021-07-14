@@ -5,51 +5,39 @@ plugins {
     id("io.spring.dependency-management")
     kotlin("jvm")
     kotlin("plugin.spring")
+    kotlin("plugin.jpa")
 }
 
+group = "automation"
 version = "0.0.1"
-
 java.sourceCompatibility = JavaVersion.VERSION_16
 
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
-    }
-}
 
 dependencies {
+
     implementation(project(":commons"))
-
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-
-    implementation("org.springframework.kafka:spring-kafka")
-    implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "6.2.0") {
-        exclude(group = "org.slf4j")
-        exclude(group = "log4j")
-    }
-
-    implementation("org.springframework.boot:spring-boot-starter-validation")
 
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
 
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("mysql:mysql-connector-java")
+
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
 
     testImplementation("org.springframework.kafka:spring-kafka-test")
-
-    testImplementation("org.awaitility:awaitility:4.0.3")
-    testImplementation("com.h2database:h2")
+    testRuntimeOnly("com.h2database:h2")
 }
 
 extra["springCloudVersion"] = "2020.0.3"
@@ -70,8 +58,3 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "16"
     }
 }
-
-// https://docs.spring.io/spring-boot/docs/2.3.4.RELEASE/gradle-plugin/reference/html/#build-image
-//tasks.getByName<BootBuildImage>("bootBuildImage") {
-//    imageName = ""
-//}

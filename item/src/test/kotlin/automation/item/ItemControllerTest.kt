@@ -50,6 +50,12 @@ class ItemControllerTest {
             .expectBody()
             .jsonPath("$").isArray
 
+//        [
+//            {"id":"8e85cca0-73f9-4af8-9df9-dedb38918b53","name":"Lápis","price":100},
+//            {"id":"93bff30f-0214-4c6e-8327-57dbbdd6afae","name":"Caneta","price":200}
+//        ]
+
+
     }
 
 }

@@ -73,11 +73,9 @@ class TagService(
             .saveTag()
             .notifyChanges()
 
-
     private fun findTag(id: Long) =
         Mono.justOrEmpty(this.tagRepository.findByIdOrNull(id))
             .switchIfEmpty(Mono.error(TagNotFoundException(id)))
-
 
     private fun Mono<Tag>.saveTag() =
         this.map { tag -> tagRepository.save(tag) }
@@ -87,8 +85,6 @@ class TagService(
 
     private fun Mono<Tag>.notifyChanges() =
         this.doOnNext { tag -> tagNotificationProducer.notifyChanges(tag) }
-
-
 
     private fun Mono<List<Tag>>.saveTags(): Mono<List<Tag>> =
         this.map { tagRepository.saveAll(it) }

@@ -22,16 +22,12 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-
     implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.apache.kafka:kafka-streams")
     implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "6.2.0") {
         exclude(group = "org.slf4j")
         exclude(group = "log4j")
     }
-
-    implementation("org.springframework.boot:spring-boot-starter-validation")
 
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
 
@@ -47,12 +43,10 @@ dependencies {
     }
 
     testImplementation("org.springframework.kafka:spring-kafka-test")
-
     testImplementation("org.awaitility:awaitility:4.0.3")
-    testImplementation("com.h2database:h2")
 }
 
-extra["springCloudVersion"] = "2020.0.3"
+extra["springCloudVersion"] = "2020.0.1"
 
 dependencyManagement {
     imports {
@@ -70,8 +64,3 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "16"
     }
 }
-
-// https://docs.spring.io/spring-boot/docs/2.3.4.RELEASE/gradle-plugin/reference/html/#build-image
-//tasks.getByName<BootBuildImage>("bootBuildImage") {
-//    imageName = ""
-//}

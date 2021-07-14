@@ -17,7 +17,6 @@ class ExceptionHandler {
         return ResponseEntity.badRequest().body(errors)
     }
 
-
 }
 
 data class Error(val code: String?, val message: String?)

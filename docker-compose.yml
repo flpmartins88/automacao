@@ -172,6 +172,22 @@ services:
                      --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 \
                      --topic item_produced
 
+        kafka-topics --create --if-not-exists \
+                     --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 \
+                     --topic order
+
+      kafka-topics --create --if-not-exists \
+                     --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 \
+                     --topic customer
+
+      kafka-topics --create --if-not-exists \
+                     --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 \
+                     --topic payment
+
+      kafka-topics --create --if-not-exists \
+                     --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 \
+                     --topic order_completed
+
       "
     environment:
       KAFKA_BROKER_ID: ignored

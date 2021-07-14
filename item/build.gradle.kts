@@ -11,7 +11,7 @@ plugins {
 
 version = "0.0.1"
 
-java.sourceCompatibility = JavaVersion.VERSION_15
+java.sourceCompatibility = JavaVersion.VERSION_16
 
 configurations {
     compileOnly {
@@ -46,8 +46,6 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
 }
 
-extra["springCloudVersion"] = "Hoxton.SR8"
-
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
@@ -61,6 +59,6 @@ tasks.withType<Test> {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "14"
+        jvmTarget = "16"
     }
 }

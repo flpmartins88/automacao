@@ -17,7 +17,7 @@ public class ItemCreatedConsumerTest extends BaseSpringTest {
     private BalanceRepository balanceRepository;
 
     @Test
-    void shouldConsumeEventOfNewItem() throws InterruptedException {
+    void shouldConsumeEventOfNewItem() {
         var itemCreatedEvent = ItemEvent.newBuilder()
                 .setId(UUID.randomUUID().toString())
                 .setName("Pilha")

@@ -13,7 +13,6 @@ import javax.validation.Valid
 @RequestMapping("/tags")
 class TagController(private val tagService: TagService) {
 
-
     @PostMapping
     fun create(@Valid @RequestBody tagRequest: TagRequest): Flux<TagResponse> =
         tagService.create(tagRequest.item!!, tagRequest.quantity!!, tagRequest.group, tagRequest.numberOfTags)

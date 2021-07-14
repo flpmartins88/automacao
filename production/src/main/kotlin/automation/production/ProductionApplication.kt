@@ -10,9 +10,7 @@ import java.time.ZonedDateTime
 
 @EnableFeignClients
 @SpringBootApplication
-class ProductionApplication(
-    private val tagClient: TagClient
-) : ApplicationRunner {
+class ProductionApplication(private val tagClient: TagClient) : ApplicationRunner {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 

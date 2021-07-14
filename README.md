@@ -45,3 +45,7 @@ Para executar
     docker-compose up
 
 Use -d caso você queria que o console fique livre
+
+Agora é possível gerar as imagens docker com o comando
+    
+    ./gradlew bootBuildImage

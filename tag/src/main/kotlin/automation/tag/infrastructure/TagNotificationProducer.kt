@@ -1,6 +1,6 @@
 package automation.tag.infrastructure
 
-import automation.events.item.Item
+import automation.events.item.ItemEvent
 import automation.events.tag.Status
 import automation.events.tag.TagEvent
 import automation.tag.domain.Tag
@@ -20,7 +20,7 @@ class TagNotificationProducer(private val kafkaTemplate: KafkaTemplate<String, S
 }
 
 private fun Tag.toEvent(): TagEvent {
-    val item = Item.newBuilder()
+    val item = ItemEvent.newBuilder()
         .setId(this.item.id)
         .setName(this.item.name)
         .build()
@@ -31,11 +31,11 @@ private fun Tag.toEvent(): TagEvent {
         .setStatus(this.getStatus().toTagStatusEvent())
         .setQuantity(this.quantity)
         .setGroup(this.group)
-        .setCreated(this.created.toInstant().toEpochMilli())
-        .setProduced(this.produced?.toInstant()?.toEpochMilli())
-        .setAnalyzed(this.analyzed?.toInstant()?.toEpochMilli())
-        .setShipped(this.shipped?.toInstant()?.toEpochMilli())
-        .setCanceled(this.canceled?.toInstant()?.toEpochMilli())
+        .setCreated(this.created.toInstant())
+        .setProduced(this.produced?.toInstant())
+        .setAnalyzed(this.analyzed?.toInstant())
+        .setShipped(this.shipped?.toInstant())
+        .setCanceled(this.canceled?.toInstant())
         .build()
 }
 
