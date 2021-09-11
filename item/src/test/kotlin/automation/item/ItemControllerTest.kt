@@ -35,6 +35,17 @@ class ItemControllerTest {
     }
 
     @Test
+    fun `should delete item`() {
+        val item = Item(name = "Teclado", price = 5000)
+        itemRepository.save(item).subscribe()
+
+        webTestClient.delete().uri { builder -> builder.path("/items/{id}").build(item.id) }
+            .exchange()
+            .expectStatus().isNoContent
+            .expectBody().isEmpty
+    }
+
+    @Test
     fun shouldGetAllItems() {
         val items = listOf(
             Item(name = "Caneta", price = 200),

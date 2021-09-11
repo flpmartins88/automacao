@@ -9,8 +9,6 @@ plugins {
     kotlin("plugin.spring")
 }
 
-version = "0.0.1"
-
 java.sourceCompatibility = JavaVersion.VERSION_16
 
 configurations {
@@ -62,3 +60,5 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "16"
     }
 }
+
+

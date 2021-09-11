@@ -24,6 +24,12 @@ class ItemController(private val itemService: ItemService) {
             .toResponse()
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun delete(@PathVariable id: String): Mono<Void> {
+        return itemService.delete(id)
+    }
+
     @GetMapping("/{id}")
     fun get(@PathVariable id: String): Mono<ItemResponse> =
         itemService.get(id)

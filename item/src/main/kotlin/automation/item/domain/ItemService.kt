@@ -64,5 +64,8 @@ class ItemService(private val itemRepository: ItemRepository) {
             it.price = newValues.price
             it
         }
+
+    fun delete(id: String) =
+        this.itemRepository.deleteById(id)
 }
 
