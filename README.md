@@ -49,3 +49,31 @@ Use -d caso você queria que o console fique livre
 Agora é possível gerar as imagens docker com o comando
     
     ./gradlew bootBuildImage
+
+
+Sequência:
+
+- Cadastra item
+- dispara evento avisando que um item foi criado
+- Gera etiqueta para o item
+- Dispara evento avisando que a etiqueta foi gerada
+- Passa pelo sistema de produção
+- dispara evento dizendo que o item foi produzido
+- passa pelo controle de qualidade
+- passa pelo sistema de pedido
+- sistema de pedido dispara evento reservando item
+- passa pelo sistema de expedição
+- sistema de expedição consome a etiqueta e dá baixa no estoque
+
+
+Sequência cadastro de item:
+
+- Estoque pega evento de item criado
+- Cria entrada no estoque para o item
+
+Sequência de movimento de estoque
+
+- Estoque pega evento de item produzido
+- Estoque adiciona a quantidade produzida no item
+
+
