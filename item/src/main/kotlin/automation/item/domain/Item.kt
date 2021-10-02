@@ -8,4 +8,5 @@ class Item(
 ) {
     @Id
     var id: Long? = null
+        private set
 }
