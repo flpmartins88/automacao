@@ -1,5 +1,6 @@
 package automation.item.domain
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository
+import org.springframework.data.repository.reactive.ReactiveCrudRepository
+import java.util.*
 
-interface ItemRepository : ReactiveMongoRepository<Item, String>
+interface ItemRepository : ReactiveCrudRepository<Item, Long>

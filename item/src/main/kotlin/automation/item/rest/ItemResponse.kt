@@ -1,7 +1,9 @@
 package automation.item.rest
 
+import java.util.*
+
 class ItemResponse (
-    val id: String,
+    val id: Long,
     val name: String,
     val price: Long
 )

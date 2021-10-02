@@ -3,6 +3,7 @@ package automation.item.domain
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.*
 
 /**
  * Service to manipulate item domain
@@ -29,7 +30,7 @@ class ItemService(private val itemRepository: ItemRepository) {
      *
      * @return Current state of this item
      */
-    fun update(id: String, item: Item): Mono<Item> {
+    fun update(id: Long, item: Item): Mono<Item> {
         return itemRepository.findById(id)
             .setValues(item)
             .update()
@@ -51,7 +52,7 @@ class ItemService(private val itemRepository: ItemRepository) {
      *
      * @return An [Item]
      */
-    fun get(id: String): Mono<Item> =
+    fun get(id: Long): Mono<Item> =
         itemRepository.findById(id)
             .switchIfEmpty(Mono.error(ItemNotFoundException(id)))
 
@@ -65,7 +66,16 @@ class ItemService(private val itemRepository: ItemRepository) {
             it
         }
 
-    fun delete(id: String) =
-        this.itemRepository.deleteById(id)
+    /**
+     * Deletes an item
+     *
+     * @param id Item's id
+     *
+     * @return Removed item
+     * @throws ItemNotFoundException if an item with this ID was not found
+     */
+    fun delete(id: Long) =
+        this.itemRepository.findById(id)
+            .switchIfEmpty(Mono.error(ItemNotFoundException(id)))
+            .flatMap { this.itemRepository.deleteById(id).thenReturn(it) }
 }
-

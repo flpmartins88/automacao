@@ -1,3 +1,5 @@
 package automation.item.domain
 
-class ItemNotFoundException(val id: String) : Exception("Item $id not found")
+import java.util.*
+
+class ItemNotFoundException(val id: Long) : Exception("Item $id not found")

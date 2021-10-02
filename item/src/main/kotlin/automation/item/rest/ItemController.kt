@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.*
 import javax.validation.Valid
 
 @RestController
@@ -19,19 +20,20 @@ class ItemController(private val itemService: ItemService) {
             .toResponse()
 
     @PutMapping("/{id}")
-    fun update(@PathVariable id: String, @Valid @RequestBody itemRequest: ItemRequest): Mono<ItemResponse> {
+    fun update(@PathVariable id: Long, @Valid @RequestBody itemRequest: ItemRequest): Mono<ItemResponse> {
         return itemService.update(id, itemRequest.toDomain())
             .toResponse()
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable id: String): Mono<Void> {
+    @ResponseStatus(HttpStatus.OK)
+    fun delete(@PathVariable id: Long): Mono<ItemResponse> {
         return itemService.delete(id)
+            .toResponse()
     }
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: String): Mono<ItemResponse> =
+    fun get(@PathVariable id: Long): Mono<ItemResponse> =
         itemService.get(id)
             .toResponse()
 
@@ -48,7 +50,7 @@ private fun ItemRequest.toDomain() =
     Item(name = this.name!!, price = this.price!!)
 
 private fun Item.toResponse() =
-    ItemResponse(id = this.id, name = this.name, price = this.price)
+    ItemResponse(id = this.id!!, name = this.name, price = this.price)
 
 private fun Mono<Item>.toResponse() =
     this.map { it.toResponse() }
