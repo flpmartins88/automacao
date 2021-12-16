@@ -18,6 +18,9 @@ configurations {
 }
 
 dependencies {
+
+    implementation(project(":commons"))
+
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -31,6 +34,12 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "5.5.1") {
+        exclude(group = "org.slf4j")
+        exclude(group = "log4j")
+    }
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -46,6 +55,8 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("io.r2dbc:r2dbc-h2")
     testImplementation("com.h2database:h2")
+
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 dependencyManagement {

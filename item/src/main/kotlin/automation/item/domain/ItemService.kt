@@ -1,9 +1,10 @@
 package automation.item.domain
 
+
+import automation.item.infrastructure.ItemCreatedProducer
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.util.*
 
 /**
  * Service to manipulate item domain
@@ -11,7 +12,9 @@ import java.util.*
  * @author Felipe Martins
  */
 @Service
-class ItemService(private val itemRepository: ItemRepository) {
+class ItemService(
+    private val itemRepository: ItemRepository,
+    private val itemCreatedProducer: ItemCreatedProducer) {
 
     /**
      * Adds a new Item
@@ -78,4 +81,5 @@ class ItemService(private val itemRepository: ItemRepository) {
         this.itemRepository.findById(id)
             .switchIfEmpty(Mono.error(ItemNotFoundException(id)))
             .flatMap { this.itemRepository.deleteById(id).thenReturn(it) }
+            .flatMap { this.itemCreatedProducer.send(it).thenReturn(it) }
 }

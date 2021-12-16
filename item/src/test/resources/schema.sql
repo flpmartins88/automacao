@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS item (
     id    BIGINT       AUTO_INCREMENT PRIMARY KEY,
+    code  VARCHAR(50)  NOT NULL,
     name  VARCHAR(200) NOT NULL,
     price BIGINT       NOT NULL
 );
