@@ -1,6 +1,6 @@
-rootProject.name = "automacao"
+rootProject.name = "automation"
 
-include("tag", "item", "production", "inventory", "commons", "auth", "order")
+include("tag", "item", "production", "inventory", "commons", "auth", "order", "gateway")
 
 pluginManagement {
     repositories {
@@ -11,3 +11,4 @@ pluginManagement {
     }
 }
 include("data-stream-processor")
+include("integration")

@@ -9,7 +9,7 @@ plugins {
     kotlin("plugin.spring")
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_16
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 configurations {
     compileOnly {
@@ -72,7 +72,7 @@ tasks.withType<Test> {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "16"
+        jvmTarget = "17"
     }
 }
 
