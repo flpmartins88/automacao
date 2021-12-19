@@ -8,14 +8,7 @@ plugins {
     kotlin("plugin.jpa")
 }
 
-group = "automation"
-version = "0.0.1"
-java.sourceCompatibility = JavaVersion.VERSION_16
-
-//repositories {
-//    mavenCentral()
-//    maven(url="https://packages.confluent.io/maven/")
-//}
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
 
@@ -23,10 +16,6 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("mysql:mysql-connector-java")
-//    TODO: Ver para usar o R2DBC com o Spring Data
-//    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-//    implementation("org.springframework.data:spring-data-r2dbc:1.1.3.RELEASE")
-//    implementation("dev.miku:r2dbc-mysql:0.8.2.RELEASE")
 
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -58,8 +47,6 @@ dependencies {
     testRuntimeOnly("com.h2database:h2")
 }
 
-extra["springCloudVersion"] = "2020.0.0-M5"
-
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
@@ -73,6 +60,6 @@ tasks.withType<Test> {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "16"
+        jvmTarget = "17"
     }
 }

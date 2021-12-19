@@ -73,7 +73,7 @@ internal class TagControllerTest {
 
     @Test
     fun create() {
-        val item = Item(id = UUID.randomUUID().toString(), name = "Any name")
+        val item = Item(id = Random().nextLong(), name = "Any name")
 
         Mockito.`when`(itemClient.getItem(item.id)).thenReturn(Mono.just(item))
 
@@ -107,7 +107,7 @@ internal class TagControllerTest {
     @Test
     fun get() {
         val tag = tagRepository.save(Tag(
-            item = automation.tag.domain.Item(id=UUID.randomUUID().toString(), name="Qualquer Coisa"),
+            item = automation.tag.domain.Item(id=Random().nextLong(), name="Qualquer Coisa"),
             quantity = 1,
             group = null
         ))
@@ -117,8 +117,6 @@ internal class TagControllerTest {
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk
-//            .expectBody(TagResponse::class.java)
-//            .value { it -> Assertions.assertThat(it.id).isEqualTo(tag.id) }
             .expectBody()
             .jsonPath("$.id").isEqualTo(tag.id!!)
             .jsonPath("$.item.id").isEqualTo(tag.item.id)

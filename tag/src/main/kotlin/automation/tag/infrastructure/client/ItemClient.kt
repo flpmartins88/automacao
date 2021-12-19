@@ -20,7 +20,7 @@ interface ItemClient {
      *
      * @return [Item] data
      */
-    fun getItem(id: String): Mono<Item>
+    fun getItem(id: Long): Mono<Item>
 }
 
 @Component
@@ -31,7 +31,7 @@ class ItemClientImpl(
 
     val webClient: WebClient = WebClient.create(itemServiceUrl)
 
-    override fun getItem(id: String) =
+    override fun getItem(id: Long) =
         webClient.get()
             .uri("/$id")
             .retrieve()

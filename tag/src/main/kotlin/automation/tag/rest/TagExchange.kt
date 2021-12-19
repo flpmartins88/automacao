@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull
 class TagRequest(
 
     @NotNull
-    var item: String?,
+    var item: Long?,
 
     @Min(1)
     @Max(1000)
@@ -37,6 +37,6 @@ class TagResponse(
 )
 
 data class ItemResponse(
-    val id: String,
+    val id: Long,
     val name: String
 )

@@ -7,15 +7,15 @@ import reactor.core.publisher.Mono
 @Service
 class ItemService(private val itemClient: ItemClient) {
 
-    fun findItem(id: String): Mono<Item> = itemClient.getItem(id)
+    fun findItem(id: Long): Mono<Item> = itemClient.getItem(id)
         .onErrorMap { ItemNotFoundException(id, it) }
 
 }
 
-class ItemNotFoundException(id: String, cause: Throwable? = null) :
+class ItemNotFoundException(id: Long, cause: Throwable? = null) :
     Exception("Item $id not found", cause)
 
 data class Item(
-    val id: String,
+    val id: Long,
     val name: String
 )

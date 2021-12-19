@@ -28,7 +28,7 @@ class TagService(
      *
      * @return A new [Tag]
      */
-    fun create(item: String, quantity: Int, group: String?, numberOfTags: Int): Flux<Tag> =
+    fun create(item: Long, quantity: Int, group: String?, numberOfTags: Int): Flux<Tag> =
         itemService.findItem(item)
             .createTags(quantity, group, numberOfTags)
             .saveTags()
@@ -51,7 +51,6 @@ class TagService(
     fun produceTag(id: Long, tagProduced: TagProducedRequest): Mono<Tag> =
         findTag(id)
             .map { tag -> tag.produce(tagProduced.dataProduced!!); tag }
-//            .doOnNext { tag -> tag.produce(tagProduced.dataProduced!!) }
             .saveTag()
             .notifyChanges()
 

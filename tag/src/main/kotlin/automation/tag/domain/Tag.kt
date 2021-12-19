@@ -135,6 +135,6 @@ enum class TagStatus : TagState {
 
 @Embeddable
 data class Item(
-    val id: String,
+    val id: Long,
     val name: String
 )
