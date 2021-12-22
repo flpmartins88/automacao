@@ -30,7 +30,7 @@ class TagResponse(
     val item: ItemResponse,
     val quantity: Int,
     val created: ZonedDateTime,
-    val processed: ZonedDateTime?,
+    val produced: ZonedDateTime?,
     val canceled: ZonedDateTime?,
 
     val group: String?

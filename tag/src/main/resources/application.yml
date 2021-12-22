@@ -9,6 +9,7 @@ spring:
   jackson:
     default-property-inclusion: non_null
     property-naming-strategy: SNAKE_CASE
+    time-zone: UTC
   jpa:
     show-sql: true
     generate-ddl: true

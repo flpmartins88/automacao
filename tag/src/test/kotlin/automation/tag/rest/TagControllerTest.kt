@@ -1,5 +1,6 @@
 package automation.tag.rest
 
+import automation.tag.buildTagCreated
 import automation.tag.domain.Tag
 import automation.tag.domain.TagRepository
 import automation.tag.infrastructure.Item
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.test.EmbeddedKafkaBroker
@@ -24,6 +26,9 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Mono
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 const val TAG_EVENTS_TOPIC = "tag_events"
@@ -122,11 +127,32 @@ internal class TagControllerTest {
             .jsonPath("$.item.id").isEqualTo(tag.item.id)
             .jsonPath("$.quantity").isEqualTo(tag.quantity)
             .jsonPath("$.group").doesNotExist()
-
-
     }
 
     @Test
     fun markAsProduced() {
+        val tag = tagRepository.save(buildTagCreated()).let { tagRepository.findByIdOrNull(it.id!!)!! }
+        val producedDate = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC"))
+
+        val createdDateString = tag.created
+            .withZoneSameInstant(ZoneId.of("UTC"))
+            .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+
+        val producedDateString = producedDate.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+
+        webTestClient.post()
+            .uri("/tags/${tag.id}/produced")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .body(Mono.just(TagProducedRequest(producedDate)), TagProducedRequest::class.java)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.id").isEqualTo(tag.id!!)
+            .jsonPath("$.item.id").isEqualTo(tag.item.id)
+            .jsonPath("$.item.name").isEqualTo(tag.item.name)
+            .jsonPath("$.quantity").isEqualTo(tag.quantity)
+            .jsonPath("$.created").isEqualTo(createdDateString)
+            .jsonPath("$.produced").isEqualTo(producedDateString)
     }
 }
