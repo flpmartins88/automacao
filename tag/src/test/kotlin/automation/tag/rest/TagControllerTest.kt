@@ -1,10 +1,13 @@
 package automation.tag.rest
 
+import automation.events.tag.TagEvent
 import automation.tag.buildTagCreated
 import automation.tag.domain.Tag
 import automation.tag.domain.TagRepository
 import automation.tag.infrastructure.Item
 import automation.tag.infrastructure.client.ItemClient
+import io.confluent.kafka.serializers.KafkaAvroDeserializer
+import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerConfig
@@ -26,9 +29,9 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Mono
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 const val TAG_EVENTS_TOPIC = "tag_events"
@@ -57,7 +60,7 @@ internal class TagControllerTest {
     @Autowired
     lateinit var tagRepository: TagRepository
 
-    private lateinit var consumer: Consumer<String, SpecificRecord>
+    private lateinit var consumer: Consumer<SpecificRecord, SpecificRecord>
 
     @BeforeAll
     fun setUpConsumer() {
@@ -66,9 +69,14 @@ internal class TagControllerTest {
             this.embeddedKafkaBroker
         )
         consumerProps[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
+        consumerProps[KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG] = "mock://testUrl"
+        consumerProps[KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG] = "true"
+        consumerProps[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] =  KafkaAvroDeserializer::class.qualifiedName
+        consumerProps[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = KafkaAvroDeserializer::class.qualifiedName
 
-        val consumerFactory = DefaultKafkaConsumerFactory<String, SpecificRecord>(consumerProps)
+        val consumerFactory = DefaultKafkaConsumerFactory<SpecificRecord, SpecificRecord>(consumerProps)
         consumer = consumerFactory.createConsumer()
+        embeddedKafkaBroker.consumeFromAnEmbeddedTopic(consumer, "tag_events")
     }
 
     @AfterAll
@@ -93,8 +101,13 @@ internal class TagControllerTest {
             .expectStatus().is2xxSuccessful
             .expectBodyList(TagResponse::class.java)
 
-        embeddedKafkaBroker.consumeFromAnEmbeddedTopic(consumer, "tag_events")
-        val replies = KafkaTestUtils.getRecords(consumer)
+        val timeToWait = Duration.ofSeconds(2).toMillis()
+
+        // sometimes the test fails because get the records return the first one only
+        // the others aren't in kafka
+        // the third parameter will force consumer to wait the messages
+        // but the assertion will never be false because the timeout will stop the test if was produced less them the expected
+        val replies = KafkaTestUtils.getRecords(consumer, timeToWait, request.numberOfTags)
 
         assertEquals(request.numberOfTags, replies.count(), "Mensagens geradas")
     }
@@ -154,5 +167,30 @@ internal class TagControllerTest {
             .jsonPath("$.quantity").isEqualTo(tag.quantity)
             .jsonPath("$.created").isEqualTo(createdDateString)
             .jsonPath("$.produced").isEqualTo(producedDateString)
+
+        val record = KafkaTestUtils.getRecords(consumer)
+            .records("tag_events")
+            .first()
+            .value() as TagEvent
+
+        assertEquals(tag.item.id, record.item.id)
+        assertEquals(tag.item.name, record.item.name)
+        assertEquals(tag.quantity, record.quantity)
+        assertDates(tag.created, record.created)
+        assertDates(producedDate, record.produced)
+
     }
+}
+
+fun assertDates(expected: ZonedDateTime, actual: Instant) {
+    val expectedFormatted = expected
+        .withZoneSameInstant(ZoneOffset.UTC)
+        .truncatedTo(ChronoUnit.MILLIS)
+        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+
+    val actualFormatted = actual
+        .atOffset(ZoneOffset.UTC)
+        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+
+    assertEquals(expectedFormatted, actualFormatted)
 }

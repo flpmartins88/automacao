@@ -26,10 +26,12 @@ spring:
     bootstrap-servers: localhost:9092
     producer:
       value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      key-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
     consumer:
       enable-auto-commit: false
       group-id: tag-service
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       client-id: 1
       properties:
         specific.avro.reader: true
