@@ -1,49 +1,34 @@
 version: "3.3"
 
 services:
+  registry:
+    image: registry:latest
+    ports:
+      - "5000:5000"
+    restart: always
+    environment:
+      REGISTRY_HTTP_SECRET: 12345678
+
   item-service:
     build: item/
     image: automacao/item-service
     depends_on:
-      - mongo
+      - mysql
     ports:
-      - 8091:8091
+      - "8091:8091"
     environment:
       SPRING_PROFILES_ACTIVE: docker
 
   tag-service:
-    build: tag/
-    image: automacao/tag-service
+    image: automation/tag-service
     depends_on:
       - mysql
       - kafka-broker
     ports:
-      - 8092:8092
+      - "8092:8092"
     environment:
       SPRING_PROFILES_ACTIVE: docker
 
-  mongo:
-    image: mongo
-    restart: always
-    ports:
-    - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
-      MONGO_INITDB_DATABASE: services
-      MONGO_NON_ROOT_USERNAME: user
-      MONGO_NON_ROOT_PASSWORD: password
-
-  mongo-express:
-    image: mongo-express
-    restart: always
-    depends_on:
-      - mongo
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: root
 
 #  rabbit:
 #    image: rabbitmq:3-management-alpine
@@ -59,7 +44,7 @@ services:
   mysql:
     image: mysql/mysql-server
     ports:
-      - 3306:3306
+      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_ROOT_HOST=%
@@ -71,7 +56,7 @@ services:
     hostname: zookeeper
     container_name: zookeeper
     ports:
-      - 2181:2181
+      - "2181:2181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -83,9 +68,9 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - 29092:29092
-      - 9092:9092
-      - 9101:9101
+      - "29092:29092"
+      - "9092:9092"
+      - "9101:9101"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
@@ -105,7 +90,7 @@ services:
       - zookeeper
       - kafka-broker
     ports:
-      - 8081:8081
+      - "8081:8081"
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
@@ -135,7 +120,7 @@ services:
       - kafka-broker
       - schema-registry
     ports:
-      - 9021:9021
+      - "9021:9021"
     environment:
       CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka-broker:29092'
       CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
@@ -200,9 +185,9 @@ services:
 #    image: automacao/frontend
 #    ports:
 #      - '4200:80'
-  proxy:
-    image: nginx
-    ports:
-    - 80:80
-    volumes:
-    - ./nginx/:/etc/nginx/conf.d/
+#  proxy:
+#    image: nginx
+#    ports:
+#    - "80:80"
+#    volumes:
+#    - ./nginx/:/etc/nginx/conf.d/

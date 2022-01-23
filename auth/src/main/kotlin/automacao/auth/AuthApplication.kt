@@ -11,20 +11,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
-//import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer
-//import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter
-//import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer
-//import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer
-//import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter
-//import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer
+import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
 
 @SpringBootApplication
-//@EnableAuthorizationServer
-//@EnableResourceServer
+@EnableAuthorizationServer
+@EnableResourceServer
 class AuthApplication
 
 fun main(args: Array<String>) {
@@ -91,39 +87,39 @@ class Controller {
 /*
  * Para configurar o security para os clients
  */
-//@Configuration
-//@EnableResourceServer
-//class ResourceAdapter : ResourceServerConfigurerAdapter() {
+@Configuration
+@EnableResourceServer
+class ResourceAdapter : ResourceServerConfigurerAdapter() {
+
+//	config para o feign saber
+//	security:
+//		oauth2:
+//			resource:
+//				user-info-uri: http://localhost:8888/me
+
+//	é possível instruir a passagem de autenticação pelas coisas do spring tbm
+//	no caso do zuul (api gateway)
+//	zuul:
+//		sensitive-headers:
+//		- Cookie, Authorization
+
+	// configurar o feign para fazer requests usando o token
+//	@Bean
+//	fun requestInterceptor(): RequestInterceptor {
+//		return RequestInterceptor {
+//			SecurityContextHolder.getContext().authentication
+//				?.let { authentication ->
+//					val details = authentication.details as OAuth2AuthenticationDetails
+//					it.header("Authorization", "Bearer ${details.tokenValue}")
+//				}
 //
-////	config para o feign saber
-////	security:
-////		oauth2:
-////			resource:
-////				user-info-uri: http://localhost:8888/me
-//
-////	é possível instruir a passagem de autenticação pelas coisas do spring tbm
-////	no caso do zuul (api gateway)
-////	zuul:
-////		sensitive-headers:
-////		- Cookie, Authorization
-//
-//	// configurar o feign para fazer requests usando o token
-////	@Bean
-////	fun requestInterceptor(): RequestInterceptor {
-////		return RequestInterceptor {
-////			SecurityContextHolder.getContext().authentication
-////				?.let { authentication ->
-////					val details = authentication.details as OAuth2AuthenticationDetails
-////					it.header("Authorization", "Bearer ${details.tokenValue}")
-////				}
-////
-////		}
-////	}
-//
-//	override fun configure(http: HttpSecurity) {
-//		http.authorizeRequests()
-//			.antMatchers(HttpMethod.POST, "/order").hasRole("USER")
-//			.anyRequest().authenticated()
+//		}
 //	}
-//
-//}
+
+	override fun configure(http: HttpSecurity) {
+		http.authorizeRequests()
+			.antMatchers(HttpMethod.POST, "/order").hasRole("USER")
+			.anyRequest().authenticated()
+	}
+
+}

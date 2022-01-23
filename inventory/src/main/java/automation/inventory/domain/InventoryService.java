@@ -30,7 +30,7 @@ public class InventoryService {
     }
 
     @Transactional
-    public void save(String productionId, String itemId, OperationType operationType, Integer quantity, ZonedDateTime productionDate) throws ItemNotFoundException, MovementAlreadyProcessed {
+    public void save(String productionId, Long itemId, OperationType operationType, Integer quantity, ZonedDateTime productionDate) throws ItemNotFoundException, MovementAlreadyProcessed {
 
         if (movementRepository.existsByProductionId(productionId)) {
             throw new MovementAlreadyProcessed(productionId, operationType, itemId, quantity);
@@ -45,7 +45,14 @@ public class InventoryService {
             balance.remove(quantity);
         }
 
-        movementRepository.save(new Movement(productionId, itemId, operationType.toMovementType(), quantity, ZonedDateTime.now(), productionDate));
+        movementRepository.save(new Movement(
+                productionId,
+                itemId,
+                operationType.toMovementType(),
+                quantity,
+                ZonedDateTime.now(),
+                productionDate
+        ));
 
         log.info(
                 "Saved new movement to item: {} movementType: {} quantity: {}",
@@ -61,7 +68,7 @@ public class InventoryService {
      * @throws ItemAlreadyExists If that ID already exists
      */
     @Transactional
-    public void addNewItem(String itemId) throws ItemAlreadyExists {
+    public void addNewItem(Long itemId) throws ItemAlreadyExists {
         if (balanceRepository.findById(itemId).isPresent()) {
             throw new ItemAlreadyExists(itemId);
         }

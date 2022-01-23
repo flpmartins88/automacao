@@ -1,0 +1,4 @@
+
+application:
+  clients:
+    item: ${wiremock_url}

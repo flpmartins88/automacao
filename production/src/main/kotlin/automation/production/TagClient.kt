@@ -2,6 +2,7 @@ package automation.production
 
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -13,6 +14,9 @@ interface TagClient {
     @PostMapping("/tags/{tag}/produced", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun markAsProduced(@PathVariable tag: String, @RequestBody tagData: TagProducedRequest): TagProducedResponse
 
+    @GetMapping("/tags/{tag}")
+    fun getTag(@PathVariable tag: String): TagResponse
+
 }
 
 class TagProducedRequest(
@@ -23,3 +27,7 @@ class TagProducedResponse(
     val id: String,
     val dateProduced: ZonedDateTime
 )
+
+class TagResponse {
+
+}

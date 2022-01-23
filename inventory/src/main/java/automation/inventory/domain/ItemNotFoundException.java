@@ -1,7 +1,9 @@
 package automation.inventory.domain;
 
 public class ItemNotFoundException extends Exception {
-    public ItemNotFoundException(String item) {
-        super("Item '%s' was not found".formatted(item));
+
+    public ItemNotFoundException(Long item) {
+        super("Item '%d' was not found".formatted(item));
     }
+
 }

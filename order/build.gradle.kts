@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":commons"))
 
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("mysql:mysql-connector-java")
@@ -36,7 +37,8 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
 
-    testImplementation("org.springframework.kafka:spring-kafka-test")
+    testImplementation("com.github.tomakehurst:wiremock-jre8:2.30.1")
+
     testRuntimeOnly("com.h2database:h2")
 }
 

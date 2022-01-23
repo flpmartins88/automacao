@@ -13,13 +13,13 @@ import javax.persistence.Version;
 public class Balance {
 
     @Id
-    private String item;
+    private Long item;
     private Integer quantity;
 
     // To JPA :)
     protected Balance() {}
 
-    public Balance(String item, Integer quantity) {
+    public Balance(Long item, Integer quantity) {
         this.item = item;
         this.quantity = quantity;
     }
@@ -27,7 +27,7 @@ public class Balance {
     @Version
     private long version;
 
-    public String getItem() {
+    public Long getItem() {
         return this.item;
     }
 

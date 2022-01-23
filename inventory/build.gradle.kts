@@ -9,7 +9,7 @@ plugins {
 
 version = "0.0.1"
 
-java.sourceCompatibility = JavaVersion.VERSION_16
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 configurations {
     compileOnly {
@@ -51,8 +51,6 @@ dependencies {
     testImplementation("org.awaitility:awaitility:4.0.3")
     testImplementation("com.h2database:h2")
 }
-
-extra["springCloudVersion"] = "2020.0.3"
 
 dependencyManagement {
     imports {

@@ -3,7 +3,7 @@
   "name": "ItemEvent",
   "type": "record",
   "fields": [
-    {"name": "id", "type": "string"},
+    {"name": "id", "type": "long"},
     {"name": "name", "type": "string"}
   ]
 }

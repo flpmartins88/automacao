@@ -10,6 +10,17 @@ GRANT ALL
 
 --
 
+-- Item database
+CREATE SCHEMA IF NOT EXISTS item_db;
+
+CREATE USER IF NOT EXISTS 'item'@'%'
+    IDENTIFIED BY 'item';
+
+GRANT ALL
+    ON `item_db`.* TO 'item'@'%';
+
+--
+
 FLUSH PRIVILEGES;
 
 # CREATE TABLE tag_db.tag (
@@ -26,3 +37,10 @@ FLUSH PRIVILEGES;
 #     item_id   VARCHAR(50)  NOT NULL,
 #     item_name VARCHAR(200) NOT NULL
 # );
+
+CREATE TABLE IF NOT EXISTS item_db.item (
+    id    BIGINT       AUTO_INCREMENT PRIMARY KEY,
+    name  VARCHAR(200) NOT NULL,
+    price BIGINT       NOT NULL,
+    code  VARCHAR(50)  NOT NULL
+);

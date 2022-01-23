@@ -19,6 +19,6 @@ public interface BalanceRepository extends JpaRepository<Balance, String> {
      */
     // TODO talvez seja melhor lock pessimista, testar
     @Lock(value = LockModeType.OPTIMISTIC)
-    Optional<Balance> findByItem(String item);
+    Optional<Balance> findByItem(Long item);
 
 }

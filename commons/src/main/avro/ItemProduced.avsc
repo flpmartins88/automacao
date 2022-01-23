@@ -4,7 +4,7 @@
   "type": "record",
   "fields": [
     {"name": "productionId", "type": {"type": "string", "logicalType": "uuid"}},
-    {"name": "itemId", "type": "string"},
+    {"name": "itemId", "type": "long"},
     {"name": "quantity", "type": "int"},
     {"name": "eventDate", "type": {"type": "long", "logicalType": "timestamp-millis"}}
   ]
