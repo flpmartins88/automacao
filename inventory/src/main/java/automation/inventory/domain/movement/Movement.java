@@ -20,7 +20,7 @@ public class Movement {
     @Column(name = "production_id")
     private String productionId;
 
-    private String item;
+    private Long item;
     private ZonedDateTime date;
     private MovementType type;
     private Integer quantity;
@@ -30,7 +30,7 @@ public class Movement {
     // JPA :)
     protected Movement() {}
 
-    public Movement(String productionId, String item, MovementType movementType, Integer quantity, ZonedDateTime date, ZonedDateTime productionDate) {
+    public Movement(String productionId, Long item, MovementType movementType, Integer quantity, ZonedDateTime date, ZonedDateTime productionDate) {
         this.item = item;
         this.productionId = productionId;
         this.type = movementType;
@@ -39,7 +39,7 @@ public class Movement {
         this.productionDate = productionDate;
     }
 
-    public String getItem() {
+    public Long getItem() {
         return item;
     }
 

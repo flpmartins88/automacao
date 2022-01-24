@@ -28,7 +28,7 @@ public class InventoryController {
      * @throws ItemNotFoundException Quando o item não é encontrado no banco de dados
      */
     @GetMapping("/items/{item}")
-    public ResponseEntity<ItemBalance> getBalance(@PathVariable String item) throws ItemNotFoundException {
+    public ResponseEntity<ItemBalance> getBalance(@PathVariable Long item) throws ItemNotFoundException {
         return inventoryService.getBalance(item)
                 .map(ItemBalance::from)
                 .map(ResponseEntity::ok)

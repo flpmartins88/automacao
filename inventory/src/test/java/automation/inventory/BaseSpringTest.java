@@ -51,7 +51,7 @@ public class BaseSpringTest {
     @Autowired
     private EmbeddedKafkaBroker embeddedKafkaBroker;
 
-    private Producer<String, SpecificRecord> producer;
+    private Producer<Long, SpecificRecord> producer;
 
     @Value("${kafka.topics.item_created}")
     protected String itemCreatedTopic;
@@ -67,7 +67,7 @@ public class BaseSpringTest {
 
         producerProps.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "mock://testUrl");
 
-        this.producer = new DefaultKafkaProducerFactory<String, SpecificRecord>(producerProps)
+        this.producer = new DefaultKafkaProducerFactory<Long, SpecificRecord>(producerProps)
                 .createProducer();
 
     }
@@ -77,7 +77,7 @@ public class BaseSpringTest {
         producer.close();
     }
 
-    protected void produce(String topic, String recordKey, SpecificRecord recordValue) {
+    protected void produce(String topic, Long recordKey, SpecificRecord recordValue) {
         producer.send(
                 new ProducerRecord<>(topic, recordKey, recordValue),
                 (metadata, exception) -> log.info(

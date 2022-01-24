@@ -6,6 +6,7 @@ import automation.inventory.BaseSpringTest;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
+import java.util.Random;
 import java.util.UUID;
 
 import static org.awaitility.Awaitility.await;
@@ -17,7 +18,7 @@ class ItemProducedConsumerTest extends BaseSpringTest {
     public void shouldUpdateStock() {
 
         var itemEvent = ItemEvent.newBuilder()
-                .setId(UUID.randomUUID().toString())
+                .setId(new Random().nextLong())
                 .setName("Papel de Teste 001")
                 .build();
 

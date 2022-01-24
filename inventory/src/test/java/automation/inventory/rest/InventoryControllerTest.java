@@ -6,6 +6,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
+import java.util.Random;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -17,7 +18,7 @@ public class InventoryControllerTest extends BaseSpringTest {
     @Test
     public void shouldGetAnExistingItem() throws Exception {
 
-        var balance = balanceRepository.save(new Balance(UUID.randomUUID().toString(), 100));
+        var balance = balanceRepository.save(new Balance(new Random().nextLong(), 100));
 
         mockMvc.perform(get("/items/{item}", balance.getItem()))
                 .andDo(print())

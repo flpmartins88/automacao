@@ -10,7 +10,7 @@ import java.util.Optional;
  *
  * @author Felipe Martins
  */
-public interface BalanceRepository extends JpaRepository<Balance, String> {
+public interface BalanceRepository extends JpaRepository<Balance, Long> {
 
     /**
      * Finds given entity. Same of {@link JpaRepository#findById(Object)}, but locks entity.

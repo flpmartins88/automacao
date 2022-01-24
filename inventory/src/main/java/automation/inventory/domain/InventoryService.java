@@ -1,9 +1,9 @@
 package automation.inventory.domain;
 
-import automation.inventory.domain.movement.Movement;
-import automation.inventory.domain.movement.MovementRepository;
 import automation.inventory.domain.balance.Balance;
 import automation.inventory.domain.balance.BalanceRepository;
+import automation.inventory.domain.movement.Movement;
+import automation.inventory.domain.movement.MovementRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class InventoryService {
         this.movementRepository = movementRepository;
     }
 
-    public Optional<Balance> getBalance(String item) {
+    public Optional<Balance> getBalance(Long item) {
         return balanceRepository.findById(item);
     }
 
