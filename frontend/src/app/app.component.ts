@@ -7,10 +7,4 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'frontend';
-
-  widgets = [{
-    title: "Item"
-  }, {
-    title: "Tag"
-  }];
 }
