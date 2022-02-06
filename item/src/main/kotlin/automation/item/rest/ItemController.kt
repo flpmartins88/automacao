@@ -14,7 +14,7 @@ class ItemController(private val itemService: ItemService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody @Valid itemRequest: ItemRequest) =
+    fun create(@RequestBody @Valid itemRequest: ItemRequest): Mono<ItemResponse> =
         itemService.create(itemRequest.toDomain())
             .toResponse()
 
