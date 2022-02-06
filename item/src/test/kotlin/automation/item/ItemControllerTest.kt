@@ -53,7 +53,7 @@ class ItemControllerTest {
 
     @Test
     fun `should return not found when item does not exists`() {
-        val itemId = UUID.randomUUID().toString()
+        val itemId = Random().nextInt()
 
         webTestClient.delete().uri { builder -> builder.path("/items/{id}").build(itemId) }
             .exchange()
