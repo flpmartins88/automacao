@@ -1,0 +1,6 @@
+{
+  "namespace": "automation.events",
+  "name": "Type",
+  "type": "enum",
+  "symbols": ["NEW", "UPDATED", "DELETED"]
+}

@@ -4,6 +4,7 @@
   "type": "record",
   "fields": [
     {"name": "id", "type": "long"},
-    {"name": "name", "type": "string"}
+    {"name": "name", "type": "string"},
+    {"name": "type", "type": "automation.events.Type"}
   ]
 }

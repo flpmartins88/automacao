@@ -3,9 +3,9 @@
   "name": "TagEvent",
   "namespace": "automation.events.tag",
   "fields": [
-    {"name": "id", "type": "long"},
-    {"name": "item", "type": "automation.events.item.ItemEvent"},
-    {"name": "status", "type": "automation.events.tag.Status"},
+    {"name": "id",       "type": "long"},
+    {"name": "item",     "type": "automation.events.tag.Item"},
+    {"name": "status",   "type": "automation.events.tag.Status"},
     {"name": "quantity", "type": "int"},
     {"name": "group",    "type": ["null", "string"]},
     {"name": "created",  "type": {"type": "long", "logicalType": "timestamp-millis"}},

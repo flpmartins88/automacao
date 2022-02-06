@@ -1,7 +1,6 @@
 package automation.item.domain
 
-
-import automation.item.infrastructure.ItemCreatedProducer
+import automation.item.infrastructure.ItemProducer
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -14,7 +13,7 @@ import reactor.core.publisher.Mono
 @Service
 class ItemService(
     private val itemRepository: ItemRepository,
-    private val itemCreatedProducer: ItemCreatedProducer) {
+    private val itemProducer: ItemProducer) {
 
     /**
      * Adds a new Item
@@ -24,6 +23,7 @@ class ItemService(
      */
     fun create(item: Item): Mono<Item> =
         itemRepository.save(item)
+            .flatMap { itemProducer.sendItemCreated(it).thenReturn(it) }
 
     /**
      * Sets new values in item
@@ -77,9 +77,9 @@ class ItemService(
      * @return Removed item
      * @throws ItemNotFoundException if an item with this ID was not found
      */
-    fun delete(id: Long) =
+    fun delete(id: Long): Mono<Item> =
         this.itemRepository.findById(id)
             .switchIfEmpty(Mono.error(ItemNotFoundException(id)))
             .flatMap { this.itemRepository.deleteById(id).thenReturn(it) }
-            .flatMap { this.itemCreatedProducer.send(it).thenReturn(it) }
+            .flatMap { this.itemProducer.sendItemDeleted(it).thenReturn(it) }
 }

@@ -76,4 +76,16 @@ Sequência de movimento de estoque
 - Estoque pega evento de item produzido
 - Estoque adiciona a quantidade produzida no item
 
+# Utilidades
 
+## Ler uma mensagem do Kafka com schema Avro
+
+Faça download do confluent platform para ter acesso ao binário `kafka-avro-console-consumer`.
+
+    ./kafka-avro-console-consumer 
+        --bootstrap-server <kafka-broker> 
+        --topic <topic-name> 
+        --group <group-name> 
+        --property schema.registry.url="<schema-registry-url>" 
+        --property print.key=true
+        --from-beginning 

@@ -25,6 +25,5 @@ spring:
       schema.registry.url: 'http://localhost:8081'
 
 events:
-  item:
-    created: item_created
+  item: item
 
