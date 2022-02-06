@@ -1,19 +1,21 @@
 version: "3.3"
 
 services:
-  registry:
-    image: registry:latest
-    ports:
-      - "5000:5000"
-    restart: always
-    environment:
-      REGISTRY_HTTP_SECRET: 12345678
+#  registry:
+#    image: registry:latest
+#    ports:
+#      - "5000:5000"
+#    restart: always
+#    environment:
+#      REGISTRY_HTTP_SECRET: 12345678
 
   item-service:
     build: item/
     image: automacao/item-service
     depends_on:
       - mysql
+      - kafka-broker
+      - schema-registry
     ports:
       - "8091:8091"
     environment:
@@ -122,7 +124,7 @@ services:
     ports:
       - "9021:9021"
     environment:
-      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka-broker:29092'
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka-broker:9092'
       CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
       CONTROL_CENTER_REPLICATION_FACTOR: 1

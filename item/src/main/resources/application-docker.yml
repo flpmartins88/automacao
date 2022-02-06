@@ -1,9 +1,12 @@
+server:
+  port: ${PORT:8091}
+
 spring:
-  data:
-    mongodb:
-      username: root
-      password: root
-      database: services
-      authentication-database: admin
-      host: mongo
-      port: 27017
+  r2dbc:
+    url: r2dbc:mysql://mysql:3306/item_db
+    username: item
+    password: item
+  kafka:
+    bootstrap-servers: kafka-broker:9092
+    properties:
+      schema.registry.url: 'http://schema-registry:8081'
