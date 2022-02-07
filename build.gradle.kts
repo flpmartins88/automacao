@@ -18,9 +18,12 @@ allprojects {
         maven(url="https://packages.confluent.io/maven/")
         maven(url="https://repo.spring.io/milestone")
     }
+
+
 }
 
 subprojects {
+
 
     getAllTasks(true)
     //tasks.findByName("jar")?.enabled = false

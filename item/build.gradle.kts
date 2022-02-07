@@ -20,6 +20,8 @@ configurations {
 
 dependencies {
 
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
     implementation(project(":commons"))
 
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
