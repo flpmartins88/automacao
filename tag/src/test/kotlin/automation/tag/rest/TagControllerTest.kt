@@ -83,7 +83,7 @@ internal class TagControllerTest {
 
         val consumerFactory = DefaultKafkaConsumerFactory<SpecificRecord, SpecificRecord>(consumerProps)
         consumer = consumerFactory.createConsumer()
-        embeddedKafkaBroker.consumeFromAnEmbeddedTopic(consumer, "tag_events")
+        embeddedKafkaBroker.consumeFromAnEmbeddedTopic(consumer, TAG_EVENTS_TOPIC)
     }
 
     @AfterAll
