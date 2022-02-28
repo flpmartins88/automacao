@@ -5,9 +5,6 @@ import automation.tag.infrastructure.ItemService
 import automation.tag.infrastructure.TagNotificationProducer
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
-import reactor.kotlin.core.publisher.toFlux
 import java.time.ZonedDateTime
 import automation.tag.infrastructure.Item as ItemVO
 
@@ -15,7 +12,7 @@ import automation.tag.infrastructure.Item as ItemVO
 class TagService(
     private val itemService: ItemService,
     private val tagRepository: TagRepository,
-    private val tagNotificationProducer: TagNotificationProducer
+    private val tagNotificationProducer: TagNotificationProducer,
 ) {
 
     /**
@@ -28,17 +25,14 @@ class TagService(
      *
      * @return A new [Tag]
      */
-    fun create(item: Long, quantity: Int, group: String?, numberOfTags: Int): Flux<Tag> =
+    fun create(item: Long, quantity: Int, group: String?, numberOfTags: Int): List<Tag> =
         itemService.findItem(item)
             .createTags(quantity, group, numberOfTags)
             .saveTags()
-            .flatMapMany { Flux.fromIterable(it) }
             .notifyChanges()
 
-    fun findAll(): Flux<Tag> =
-        tagRepository.findAll().toFlux()
-
-    fun find(id: Long): Mono<Tag> = Mono.justOrEmpty(tagRepository.findByIdOrNull(id))
+    fun findAll(): List<Tag> =
+        tagRepository.findAll()
 
     /**
      * Marks a tag as PRODUCED and save infos about it
@@ -48,13 +42,13 @@ class TagService(
      *
      * @return The actual state of [Tag]
      */
-    fun produceTag(id: Long, tagProduced: TagProducedRequest): Mono<Tag> =
-        findTag(id)
-            .map { tag -> tag.produce(tagProduced.dataProduced!!); tag }
+    fun produceTag(id: Long, tagProduced: TagProducedRequest): Tag =
+        find(id)
+            .apply { this.produce(tagProduced.dataProduced!!) }
             .saveTag()
             .notifyChanges()
 
-    fun analyzeTag(id: Long): Mono<Tag> {
+    fun analyzeTag(id: Long): Tag {
         TODO("Not yet implemented")
     }
 
@@ -67,31 +61,31 @@ class TagService(
      * @return The actual state of [Tag]
      */
     fun cancelTag(id: Long, canceledDate: ZonedDateTime) =
-        findTag(id)
-            .doOnNext { tag -> tag.cancel(canceledDate) }
+        find(id)
+            .apply { this.cancel(canceledDate) }
             .saveTag()
             .notifyChanges()
 
-    private fun findTag(id: Long) =
-        Mono.justOrEmpty(this.tagRepository.findByIdOrNull(id))
-            .switchIfEmpty(Mono.error(TagNotFoundException(id)))
+    fun find(id: Long): Tag =
+        this.tagRepository.findByIdOrNull(id)
+            ?: throw TagNotFoundException(id)
 
-    private fun Mono<Tag>.saveTag() =
-        this.map { tag -> tagRepository.save(tag) }
+    private fun Tag.saveTag(): Tag =
+        tagRepository.save(this)
 
-    private fun Flux<Tag>.notifyChanges() =
-        this.doOnNext { tag -> tagNotificationProducer.notifyChanges(tag) }
+    private fun List<Tag>.notifyChanges(): List<Tag> =
+        this.onEach { tag-> tag.notifyChanges() }
 
-    private fun Mono<Tag>.notifyChanges() =
-        this.doOnNext { tag -> tagNotificationProducer.notifyChanges(tag) }
+    private fun Tag.notifyChanges() =
+        this.apply { tagNotificationProducer.notifyChanges(this) }
 
-    private fun Mono<List<Tag>>.saveTags(): Mono<List<Tag>> =
-        this.map { tagRepository.saveAll(it) }
+    private fun List<Tag>.saveTags(): List<Tag> =
+        tagRepository.saveAll(this)
 
 }
 
-private fun Mono<ItemVO>.createTags(quantity: Int, group: String?, numberOfTags: Int) =
-    this.map { currentItem -> (0 until numberOfTags).map { currentItem.createTag(quantity, group) } }
+private fun ItemVO.createTags(quantity: Int, group: String?, numberOfTags: Int) =
+    (0 until numberOfTags).map { this.createTag(quantity, group) }
 
 private fun ItemVO.createTag(quantity: Int, group: String?) =
     Tag(item = this.toDomain(), quantity = quantity, group = group)

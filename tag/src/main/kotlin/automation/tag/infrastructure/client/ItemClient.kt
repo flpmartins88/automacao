@@ -2,15 +2,18 @@ package automation.tag.infrastructure.client
 
 import automation.tag.infrastructure.Item
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.WebClient
-import reactor.core.publisher.Mono
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
 
 /**
  *
  *
  * @author Felipe Martins
  */
+@FeignClient(url = "\${services.item}", name = "item-service")
 interface ItemClient {
 
     /**
@@ -20,21 +23,6 @@ interface ItemClient {
      *
      * @return [Item] data
      */
-    fun getItem(id: Long): Mono<Item>
-}
-
-@Component
-class ItemClientImpl(
-    @Value("\${services.item}")
-    private val itemServiceUrl: String
-) : ItemClient {
-
-    val webClient: WebClient = WebClient.create(itemServiceUrl)
-
-    override fun getItem(id: Long) =
-        webClient.get()
-            .uri("/$id")
-            .retrieve()
-            .bodyToMono(Item::class.java)
-
+    @RequestMapping(method = [RequestMethod.GET], value = ["/{id}"])
+    fun getItem(@PathVariable id: Long): Item?
 }

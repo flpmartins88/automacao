@@ -14,7 +14,8 @@ class Tag(
     val item: Item,
 
     val quantity: Int,
-    @Column(name = "tag_group")
+
+    @Column(name ="tag_group")
     val group: String? = null
 
 ) {

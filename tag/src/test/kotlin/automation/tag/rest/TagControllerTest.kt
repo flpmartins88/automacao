@@ -6,17 +6,20 @@ import automation.tag.domain.Tag
 import automation.tag.domain.TagRepository
 import automation.tag.infrastructure.Item
 import automation.tag.infrastructure.client.ItemClient
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.confluent.kafka.serializers.KafkaAvroDeserializer
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.junit.jupiter.api.*
-
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.repository.findByIdOrNull
@@ -27,8 +30,9 @@ import org.springframework.kafka.test.context.EmbeddedKafka
 import org.springframework.kafka.test.utils.KafkaTestUtils
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.web.reactive.server.WebTestClient
-import reactor.core.publisher.Mono
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -45,11 +49,11 @@ const val TAG_EVENTS_TOPIC = "tag_events"
 )
 @DirtiesContext
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@AutoConfigureWebTestClient
+@AutoConfigureMockMvc
 internal class TagControllerTest {
 
     @Autowired
-    private lateinit var webTestClient: WebTestClient
+    private lateinit var mockMvc: MockMvc
 
     @Autowired
     private lateinit var embeddedKafkaBroker: EmbeddedKafkaBroker
@@ -59,6 +63,9 @@ internal class TagControllerTest {
 
     @Autowired
     lateinit var tagRepository: TagRepository
+
+    @Autowired
+    lateinit var objectMapper: ObjectMapper
 
     private lateinit var consumer: Consumer<SpecificRecord, SpecificRecord>
 
@@ -88,18 +95,26 @@ internal class TagControllerTest {
     fun create() {
         val item = Item(id = Random().nextLong(), name = "Any name")
 
-        Mockito.`when`(itemClient.getItem(item.id)).thenReturn(Mono.just(item))
+        Mockito.`when`(itemClient.getItem(item.id)).thenReturn(item)
 
         val request = TagRequest(item = item.id, quantity = 1, numberOfTags = 10, group = null)
 
-        webTestClient.post()
-            .uri("/tags")
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
-            .body(Mono.just(request), TagRequest::class.java)
-            .exchange()
-            .expectStatus().is2xxSuccessful
-            .expectBodyList(TagResponse::class.java)
+        mockMvc.post("/tags") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(request)
+        }.andDo {
+            print()
+        }.andExpect {
+            status { isCreated() }
+            content { contentType(MediaType.APPLICATION_JSON) }
+            content {
+                jsonPath("$") {
+                    isArray()
+                    isNotEmpty()
+                }
+            }
+        }
 
         val timeToWait = Duration.ofSeconds(2).toMillis()
 
@@ -114,12 +129,19 @@ internal class TagControllerTest {
 
     @Test
     fun getAll() {
-        webTestClient.get()
-            .uri("/tags")
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus().is2xxSuccessful
-            .expectBodyList(TagResponse::class.java)
+        mockMvc.get("/tags") {
+            accept = MediaType.APPLICATION_JSON
+        }
+            .andDo { print() }
+            .andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$") {
+                        isArray()
+                    }
+                }
+            }
     }
 
     @Test
@@ -130,16 +152,21 @@ internal class TagControllerTest {
             group = null
         ))
 
-        webTestClient.get()
-            .uri("/tags/${tag.id}")
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
-            .expectStatus().isOk
-            .expectBody()
-            .jsonPath("$.id").isEqualTo(tag.id!!)
-            .jsonPath("$.item.id").isEqualTo(tag.item.id)
-            .jsonPath("$.quantity").isEqualTo(tag.quantity)
-            .jsonPath("$.group").doesNotExist()
+        mockMvc.get("/tags/${tag.id}") {
+            accept = MediaType.APPLICATION_JSON
+        }
+            .andDo { print() }
+            .andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.id") { value(tag.id) }
+                    jsonPath("$.item.id") { value(tag.item.id) }
+                    jsonPath("$.item.name") { value(tag.item.name) }
+                    jsonPath("$.quantity") { value(tag.quantity) }
+                    jsonPath("$.group") { doesNotExist() }
+                }
+            }
     }
 
     @Test
@@ -153,20 +180,24 @@ internal class TagControllerTest {
 
         val producedDateString = producedDate.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 
-        webTestClient.post()
-            .uri("/tags/${tag.id}/produced")
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
-            .body(Mono.just(TagProducedRequest(producedDate)), TagProducedRequest::class.java)
-            .exchange()
-            .expectStatus().isOk
-            .expectBody()
-            .jsonPath("$.id").isEqualTo(tag.id!!)
-            .jsonPath("$.item.id").isEqualTo(tag.item.id)
-            .jsonPath("$.item.name").isEqualTo(tag.item.name)
-            .jsonPath("$.quantity").isEqualTo(tag.quantity)
-            .jsonPath("$.created").isEqualTo(createdDateString)
-            .jsonPath("$.produced").isEqualTo(producedDateString)
+        mockMvc.post("/tags/${tag.id}/produced") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(TagProducedRequest(producedDate))
+        }
+            .andDo { print() }
+            .andExpect {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                content {
+                    jsonPath("$.id") { value(tag.id) }
+                    jsonPath("$.item.id") { value(tag.item.id) }
+                    jsonPath("$.item.name") { value(tag.item.name) }
+                    jsonPath("$.quantity") { value(tag.quantity) }
+                    jsonPath("$.created") { value(createdDateString) }
+                    jsonPath("$.produced") { value(producedDateString) }
+                }
+            }
 
         val record = KafkaTestUtils.getRecords(consumer)
             .records("tag_events")

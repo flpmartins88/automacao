@@ -46,11 +46,6 @@ Para executar
 
 Use -d caso você queria que o console fique livre
 
-Agora é possível gerar as imagens docker com o comando
-    
-    ./gradlew bootBuildImage
-
-
 Sequência:
 
 - Cadastra item
@@ -64,7 +59,6 @@ Sequência:
 - sistema de pedido dispara evento reservando item
 - passa pelo sistema de expedição
 - sistema de expedição consome a etiqueta e dá baixa no estoque
-
 
 Sequência cadastro de item:
 

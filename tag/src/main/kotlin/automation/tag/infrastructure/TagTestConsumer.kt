@@ -18,9 +18,10 @@ class TagTestConsumer {
 
     @KafkaListener(topics = ["tag_events"])
     fun consumeEvent(record: ConsumerRecord<String, TagEvent>, ack: Acknowledgment) {
-        val event: TagEvent = record.value()
-        println(event)
-        ack.acknowledge()
+        record.value()
+            .also { println(it) }
+            .also { ack.acknowledge() }
+
     }
 
 }

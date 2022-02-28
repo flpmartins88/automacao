@@ -1,6 +1,6 @@
 package automation.tag.infrastructure
 
-import automation.events.item.ItemEvent
+import automation.events.tag.Item
 import automation.events.tag.Status
 import automation.events.tag.TagEvent
 import automation.tag.domain.Tag
@@ -20,7 +20,7 @@ class TagNotificationProducer(private val kafkaTemplate: KafkaTemplate<String, S
 }
 
 private fun Tag.toEvent(): TagEvent {
-    val item = ItemEvent.newBuilder()
+    val item = Item.newBuilder()
         .setId(this.item.id)
         .setName(this.item.name)
         .build()

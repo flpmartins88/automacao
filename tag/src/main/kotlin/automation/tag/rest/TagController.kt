@@ -3,18 +3,18 @@ package automation.tag.rest
 import automation.tag.domain.Item
 import automation.tag.domain.Tag
 import automation.tag.domain.TagService
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/tags")
+@RequestMapping("/tags", produces = [MediaType.APPLICATION_JSON_VALUE])
 class TagController(private val tagService: TagService) {
 
-    @PostMapping
-    fun create(@Valid @RequestBody tagRequest: TagRequest): Flux<TagResponse> =
+    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseStatus(HttpStatus.CREATED)
+    fun create(@Valid @RequestBody tagRequest: TagRequest): List<TagResponse> =
         tagService.create(tagRequest.item!!, tagRequest.quantity!!, tagRequest.group, tagRequest.numberOfTags)
             .toResponse()
 
@@ -22,17 +22,16 @@ class TagController(private val tagService: TagService) {
     fun getAll() = tagService.findAll().toResponse()
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): Mono<TagResponse> =
+    fun get(@PathVariable id: Long): TagResponse =
         tagService.find(id).toResponse()
 
-    @PostMapping("/{id}/produced", consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun markAsProduced(@PathVariable id: Long, @RequestBody tagProduced: TagProducedRequest): Mono<TagResponse> =
+    @PostMapping("/{id}/produced", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun markAsProduced(@PathVariable id: Long, @RequestBody tagProduced: TagProducedRequest): TagResponse =
         tagService.produceTag(id, tagProduced).toResponse()
 
 }
 
-private fun Flux<Tag>.toResponse() = this.map { it.toResponse() }
-private fun Mono<Tag>.toResponse() = this.map { it.toResponse() }
+private fun List<Tag>.toResponse() = this.map { it.toResponse() }
 
 private fun Tag.toResponse() = TagResponse(
     this.id!!,
