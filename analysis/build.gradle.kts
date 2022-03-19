@@ -7,28 +7,36 @@ plugins {
     kotlin("plugin.spring")
 }
 
-version = "0.0.1"
+java.sourceCompatibility = JavaVersion.VERSION_17
 
-java.sourceCompatibility = JavaVersion.VERSION_16
-java.targetCompatibility = JavaVersion.VERSION_16
+configurations {
+    compileOnly {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
+}
 
 dependencies {
-
     implementation(project(":commons"))
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "6.2.0") {
+        exclude(group = "org.slf4j")
+        exclude(group = "log4j")
+    }
+
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -36,10 +44,11 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
 
-    testImplementation(group="com.github.tomakehurst", name="wiremock-jre8", version="2.29.1")
-}
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 
-extra["springCloudVersion"] = "Hoxton.SR8"
+    testImplementation("org.awaitility:awaitility:4.0.3")
+    testImplementation("com.h2database:h2")
+}
 
 dependencyManagement {
     imports {
@@ -54,8 +63,6 @@ tasks.withType<Test> {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "16"
+        jvmTarget = "17"
     }
 }
-
-

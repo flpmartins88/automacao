@@ -12,3 +12,4 @@ pluginManagement {
 }
 include("data-stream-processor")
 include("integration")
+include("analysis")

@@ -24,8 +24,7 @@ allprojects {
 
 subprojects {
 
-
-    getAllTasks(true)
+    //getAllTasks(true)
     //tasks.findByName("jar")?.enabled = false
 
 //    tasks.named<Jar>("jar") {
