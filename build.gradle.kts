@@ -3,7 +3,7 @@ plugins {
     kotlin("plugin.spring") version "1.6.10" apply false
     kotlin("plugin.jpa")    version "1.6.10" apply false
 
-    id("org.springframework.boot")        version "2.6.3"  apply false
+    id("org.springframework.boot")        version "2.6.6"  apply false
     id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
 }
 
@@ -11,7 +11,7 @@ allprojects {
     group = "automation"
     version = "1.0.0"
 
-    extra["springCloudVersion"] = "2021.0.0"
+    extra["springCloudVersion"] = "2021.0.1"
 
     repositories {
         mavenCentral()
