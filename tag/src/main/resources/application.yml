@@ -42,3 +42,6 @@ spring:
 
 services:
   item: http://localhost:8091/items
+
+events:
+  tag: tag_events

@@ -33,7 +33,7 @@ public class InventoryExceptionHandler {
                 .body(errors);
     }
 
-    public static record Error(String code, String description) {
+    public record Error(String code, String description) {
 
     }
 

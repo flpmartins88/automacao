@@ -2,11 +2,9 @@ package automation.inventory.rest;
 
 import automation.inventory.domain.ItemNotFoundException;
 import automation.inventory.domain.InventoryService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -28,22 +26,23 @@ public class InventoryController {
      * @throws ItemNotFoundException Quando o item não é encontrado no banco de dados
      */
     @GetMapping("/items/{item}")
-    public ResponseEntity<ItemBalance> getBalance(@PathVariable Long item) throws ItemNotFoundException {
+    @ResponseStatus(HttpStatus.OK)
+    public ItemBalance getBalance(@PathVariable Long item) throws ItemNotFoundException {
         return inventoryService.getBalance(item)
                 .map(ItemBalance::from)
-                .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ItemNotFoundException(item));
     }
 
     @PostMapping
-    public ResponseEntity<String> save() {
+    @ResponseStatus(HttpStatus.OK)
+    public String save() {
         /* TODO
         1. Validar
         2. Salvar o movimento
         3. Atualizar o saldo
         Obs: talvez seja melhor postar uma mensagem pra evitar a concorrência e zoar os valores do banco
          */
-        return ResponseEntity.ok("OK");
+        return "OK";
     }
 
 }

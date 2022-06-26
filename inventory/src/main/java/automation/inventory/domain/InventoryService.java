@@ -69,7 +69,7 @@ public class InventoryService {
      */
     @Transactional
     public void addNewItem(Long itemId) throws ItemAlreadyExists {
-        if (balanceRepository.findById(itemId).isPresent()) {
+        if (balanceRepository.existsById(itemId)) {
             throw new ItemAlreadyExists(itemId);
         }
 
