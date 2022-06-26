@@ -3,3 +3,16 @@ spring:
     url: r2dbc:h2:mem:///test-db
     username: sa
     password:
+    properties:
+      MODE: MYSQL
+      DB_CLOSE_DELAY: -1
+
+  kafka:
+    bootstrap-servers: ${spring.embedded.kafka.brokers}
+    properties:
+      schema.registry.url: mock://testUrl
+
+#logging:
+#  level:
+#    io.r2dbc: debug
+#    org.h2: debug
