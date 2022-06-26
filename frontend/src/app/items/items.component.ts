@@ -8,6 +8,8 @@ import { ItemService } from "../item/item.service";
 })
 export class ItemsComponent implements OnInit {
 
+  items = [{id: 1, name: "Teste"}]
+
   constructor(private itemService: ItemService) { }
 
   ngOnInit(): void {

@@ -1,1 +1,15 @@
 <p>items works!</p>
+
+
+<table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of items">
+      <td>{{ item.name }}</td>
+    </tr>
+  </tbody>
+</table>
