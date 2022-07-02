@@ -11,6 +11,10 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+
+import static automation.events.Type.NEW;
+
 @Service
 public class ItemCreatedConsumer {
 
@@ -27,15 +31,22 @@ public class ItemCreatedConsumer {
     public void consumeEvent(ConsumerRecord<String, ItemEvent> record, Acknowledgment ack) {
         try {
             log.info("Adding new Item {}", record.value().getId());
-            inventoryService.addNewItem(record.value().getId());
+            var itemEvent = record.value();
+
+            if (itemEvent.getType() == NEW) {
+                inventoryService.addNewItem(record.value().getId());
+                log.info("Item {} added", record.value().getId());
+            } else {
+                log.warn("Type {} not implemented", itemEvent.getType());
+            }
+
             ack.acknowledge();
-            log.info("Item {} added", record.value().getId());
         } catch (ItemAlreadyExists ex) {
             log.warn("Error consuming item_created event for item id: " + record.value().getId() + ". Item already exists");
             ack.acknowledge();
         } catch (Exception ex) {
             log.error("Error consuming item_created event for item id: " + record.value().getId(), ex);
-            ack.nack(1000);
+            ack.nack(Duration.ofSeconds(1));
         }
     }
 

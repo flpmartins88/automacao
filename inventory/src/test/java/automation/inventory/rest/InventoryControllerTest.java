@@ -31,7 +31,7 @@ public class InventoryControllerTest extends BaseSpringTest {
 
     @Test
     public void shouldReturnErrorNotFoundWhenItemDoesNotExists() throws Exception {
-        mockMvc.perform(get("/items/{item}", UUID.randomUUID().toString()))
+        mockMvc.perform(get("/items/{item}", new Random().nextInt()))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));

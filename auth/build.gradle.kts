@@ -15,8 +15,6 @@ repositories {
 	mavenCentral()
 }
 
-extra["springCloudVersion"] = "2020.0.3"
-
 dependencies {
 //	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 	// Esse precisa da versão por causa de compatibilidade até ser migrado de vez para dentro do spring security

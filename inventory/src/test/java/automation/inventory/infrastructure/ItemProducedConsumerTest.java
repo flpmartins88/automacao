@@ -1,5 +1,6 @@
 package automation.inventory.infrastructure;
 
+import automation.events.Type;
 import automation.events.item.ItemEvent;
 import automation.events.item.ItemProducedEvent;
 import automation.inventory.BaseSpringTest;
@@ -20,6 +21,7 @@ class ItemProducedConsumerTest extends BaseSpringTest {
         var itemEvent = ItemEvent.newBuilder()
                 .setId(new Random().nextLong())
                 .setName("Papel de Teste 001")
+                .setType(Type.NEW)
                 .build();
 
         produce(itemCreatedTopic, itemEvent.getId(), itemEvent);

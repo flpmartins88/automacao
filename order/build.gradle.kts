@@ -37,12 +37,10 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
 
-    testImplementation("com.github.tomakehurst:wiremock-jre8:2.30.1")
+    testImplementation("com.github.tomakehurst:wiremock-jre8:2.33.2")
 
     testRuntimeOnly("com.h2database:h2")
 }
-
-extra["springCloudVersion"] = "2020.0.3"
 
 dependencyManagement {
     imports {

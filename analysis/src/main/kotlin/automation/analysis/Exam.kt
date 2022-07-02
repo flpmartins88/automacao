@@ -75,6 +75,6 @@ val itemAnalysis = Analysis(
     exam, exam.inspections.associateWith { inspection -> inspection.isValid("") }
 )
 
-fun main() {
-    println(itemAnalysis)
-}
+//fun main() {
+//    println(itemAnalysis)
+//}

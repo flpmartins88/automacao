@@ -1,5 +1,6 @@
 package automation.inventory.infrastructure;
 
+import automation.events.Type;
 import automation.events.item.ItemEvent;
 import automation.inventory.BaseSpringTest;
 import automation.inventory.domain.balance.BalanceRepository;
@@ -22,6 +23,7 @@ public class ItemCreatedConsumerTest extends BaseSpringTest {
         var itemCreatedEvent = ItemEvent.newBuilder()
                 .setId(new Random().nextLong())
                 .setName("Pilha")
+                .setType(Type.NEW)
                 .build();
 
         produce(itemCreatedTopic, itemCreatedEvent.getId(), itemCreatedEvent);
