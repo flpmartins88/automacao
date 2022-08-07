@@ -11,7 +11,7 @@ services:
 
   item-service:
     build: item/
-    image: automacao/item-service
+    image: automation/item-service
     depends_on:
       - mysql
       - kafka-broker

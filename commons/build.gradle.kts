@@ -6,18 +6,18 @@ plugins {
     id("com.github.davidmc24.gradle.plugin.avro") version "1.3.0"
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_13
-java.targetCompatibility = JavaVersion.VERSION_13
+java.sourceCompatibility = JavaVersion.VERSION_18
+java.targetCompatibility = JavaVersion.VERSION_18
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.apache.avro:avro:1.10.2+")
+    implementation("org.apache.avro:avro:1.11.1+")
 }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "13"
+        jvmTarget = "18"
     }
 }
 
