@@ -1,16 +1,11 @@
-@file:Suppress("SpellCheckingInspection")
-
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     id("org.springframework.boot")
     id("io.spring.dependency-management")
     kotlin("jvm")
     kotlin("plugin.spring")
+    id("automation.docker")
 }
-
-java.sourceCompatibility = JavaVersion.VERSION_17
 
 configurations {
     compileOnly {
@@ -39,7 +34,8 @@ dependencies {
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 
     implementation("org.springframework.kafka:spring-kafka")
-    implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "5.5.1") {
+
+    implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "7.2.1") {
         exclude(group = "org.slf4j")
         exclude(group = "log4j")
     }
@@ -61,25 +57,4 @@ dependencies {
     testImplementation("com.h2database:h2")
 
     testImplementation("org.springframework.kafka:spring-kafka-test")
-}
-
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-    }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "17"
-    }
-}
-
-tasks.getByName<BootJar>("bootJar") {
-    this.archiveFileName.set("${archiveBaseName.get()}.${archiveExtension.get()}")
 }

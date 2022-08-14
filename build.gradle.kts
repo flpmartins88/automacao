@@ -1,10 +1,14 @@
+import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
     kotlin("jvm")           version "1.6.21" apply false
     kotlin("plugin.spring") version "1.6.21" apply false
     kotlin("plugin.jpa")    version "1.6.21" apply false
 
-    id("org.springframework.boot")        version "2.7.1"  apply false
-    id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
+    id("org.springframework.boot")        version "2.7.2"  apply false
+    id("io.spring.dependency-management") version "1.0.12.RELEASE" apply false
 }
 
 allprojects {
@@ -18,11 +22,58 @@ allprojects {
         maven(url="https://packages.confluent.io/maven/")
         maven(url="https://repo.spring.io/milestone")
     }
-
-
 }
 
 subprojects {
+
+    afterEvaluate {
+
+        // https://docs.spring.io/spring-boot/docs/2.3.4.RELEASE/gradle-plugin/reference/html/#build-image
+        //tasks.getByName<BootBuildImage>("bootBuildImage") {
+        //    imageName = ""
+        //}
+
+
+//        configurations {
+//            compileOnly {
+//                extendsFrom(configurations.annotationProcessor.get())
+//            }
+//        }
+
+        // Fix java and kotlin versions to all subprojects
+        if (pluginManager.hasPlugin("java")) {
+            configure<JavaPluginExtension> {
+                this.sourceCompatibility = JavaVersion.VERSION_18
+                this.targetCompatibility = JavaVersion.VERSION_18
+            }
+            tasks.withType<Test> {
+                useJUnitPlatform()
+            }
+        }
+
+        if (pluginManager.hasPlugin("kotlin")) {
+            tasks.withType<KotlinCompile> {
+                kotlinOptions {
+                    freeCompilerArgs = listOf("-Xjsr305=strict")
+                    jvmTarget = "18"
+                }
+            }
+        }
+
+        if (pluginManager.hasPlugin("org.springframework.boot")) {
+            // Set jar name to all subprojects
+            tasks.getByName<BootJar>("bootJar") {
+                this.archiveFileName.set("${archiveBaseName.get()}.${archiveExtension.get()}")
+            }
+
+            // Configure dependency management to align spring boot and spring cloud dependency matrix
+            configure<DependencyManagementExtension> {
+                imports {
+                    mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+                }
+            }
+        }
+    }
 
     //getAllTasks(true)
     //tasks.findByName("jar")?.enabled = false
@@ -44,6 +95,15 @@ subprojects {
 //        docker.publishRegistry.password = "12345678"
 //    }
 
+//    val bootBuildImage = tasks.named<BootBuildImage>("bootBuildImage") {
+//        imageName = "automacao/${project.name}"
+////        buildpacks = listOf("file:///path/to/example-buildpack.tgz", "urn:cnb:builder:paketo-buildpacks/java")
+//    }
+//
+//    bootBuildImage {
+//        onlyIf { project.task("bootBuildImage") != null }
+//    }
+
 //    tasks.getByName<BootJar>("bootJar") {
 //        archiveClassifier.set("boot")
 //    }
@@ -51,24 +111,5 @@ subprojects {
 //    tasks.getByName<Jar>("jar") {
 //        archiveClassifier.set("")
 //    }
-    // TODO: Descobrir como configurar o java e o kotlin aqui
-    // O padrão não é possível por que o plugin não foi aplicado nesse arquivo
-}
 
-//class DockerPlugin : Plugin<Project> {
-//    override fun apply(target: Project) {
-////        project.task("createDockerFile") {
-////            doFirst {
-////                println("Generating DockerFile for projects")
-////            }
-////        }
-//
-//        project.task("buildDocker") {
-//            doFirst {
-//                println("Building docker images")
-//            }
-//        }
-//    }
-//}
-//
-//apply<DockerPlugin>()
+}

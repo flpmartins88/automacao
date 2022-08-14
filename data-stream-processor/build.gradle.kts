@@ -7,10 +7,6 @@ plugins {
     kotlin("plugin.spring")
 }
 
-version = "0.0.1"
-
-java.sourceCompatibility = JavaVersion.VERSION_16
-
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
@@ -44,23 +40,4 @@ dependencies {
 
     testImplementation("org.springframework.kafka:spring-kafka-test")
     testImplementation("org.awaitility:awaitility:4.0.3")
-}
-
-extra["springCloudVersion"] = "2020.0.1"
-
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-    }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "16"
-    }
 }

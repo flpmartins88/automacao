@@ -1,14 +1,11 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("org.springframework.boot") 
     id("io.spring.dependency-management") 
     kotlin("jvm") 
     kotlin("plugin.spring")
     kotlin("plugin.jpa")
+    id("automation.docker")
 }
-
-java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
 
@@ -37,21 +34,4 @@ dependencies {
 
     testRuntimeOnly("com.h2database:h2")
 
-}
-
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-    }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "17"
-    }
 }

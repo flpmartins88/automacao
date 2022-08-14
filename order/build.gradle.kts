@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("org.springframework.boot")
     id("io.spring.dependency-management")
@@ -7,11 +5,6 @@ plugins {
     kotlin("plugin.spring")
     kotlin("plugin.jpa")
 }
-
-group = "automation"
-version = "0.0.1"
-java.sourceCompatibility = JavaVersion.VERSION_16
-
 
 dependencies {
 
@@ -40,21 +33,4 @@ dependencies {
     testImplementation("com.github.tomakehurst:wiremock-jre8:2.33.2")
 
     testRuntimeOnly("com.h2database:h2")
-}
-
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-    }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "16"
-    }
 }

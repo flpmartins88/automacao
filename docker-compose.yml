@@ -1,4 +1,4 @@
-version: "3.3"
+#version: "3.3"
 
 services:
 #  registry:
@@ -10,7 +10,7 @@ services:
 #      REGISTRY_HTTP_SECRET: 12345678
 
   item-service:
-    build: item/
+    build: item/build/docker
     image: automation/item-service
     depends_on:
       - mysql
@@ -22,6 +22,7 @@ services:
       SPRING_PROFILES_ACTIVE: docker
 
   tag-service:
+    build: tag/build/docker
     image: automation/tag-service
     depends_on:
       - mysql
@@ -54,28 +55,57 @@ services:
       - ./data/setup-database.sql:/docker-entrypoint-initdb.d/setup-database.sql
 
   zookeeper:
-    image: confluentinc/cp-zookeeper:5.5.1
+    image: confluentinc/cp-zookeeper:latest
     hostname: zookeeper
     container_name: zookeeper
+    healthcheck:
+      test: echo srvr | nc zookeeper 2181 || exit 1
+      retries: 20
+      interval: 10s
     ports:
-      - "2181:2181"
+      - 2181:2181
+      - 2182:2182
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SECURE_CLIENT_PORT: 2182
 
   kafka-broker:
-    image: confluentinc/cp-kafka:5.5.1
+    image: confluentinc/cp-kafka:latest
     hostname: kafka-broker
     container_name: kafka-broker
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
+    healthcheck:
+      test: curl --user superUser:superUser -fail --silent --insecure https://kafka1:8091/kafka/v3/clusters/ --output /dev/null || exit 1
+      interval: 10s
+      retries: 25
+      start_period: 20s
     ports:
-      - "29092:29092"
-      - "9092:9092"
-      - "9101:9101"
+      - 8091:8091
+      - 9091:9091
+      - 10091:10091
+      - 11091:11091
+      - 12091:12091
     environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2182
+      KAFKA_ZOOKEEPER_SET_ACL: 'true'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:SASL_PLAINTEXT,TOKEN:SASL_SSL,SSL:SSL,CLEAR:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:9091,TOKEN://kafka1:10091,SSL://kafka1:11091,CLEAR://kafka1:12091
+
+      KAFKA_SUPER_USERS: User:admin;User:mds;User:superUser;User:ANONYMOUS
+      KAFKA_LOG4J_LOGGERS: "kafka.authorizer.logger=INFO"
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_BROKER_RACK: "r1"
+      KAFKA_JMX_PORT: 9991
+
+      KAFKA_DELETE_TOPIC_ENABLE: 'true'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-broker:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -85,7 +115,7 @@ services:
       KAFKA_JMX_PORT: 9101
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:5.5.1
+    image: confluentinc/cp-schema-registry:latest
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -95,10 +125,12 @@ services:
       - "8081:8081"
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka1:29092
+      SCHEMA_REGISTRY_LISTENERS: https://0.0.0.0:8081
+      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: SASL_SSL
 
 #  rest-proxy:
-#    image: confluentinc/cp-kafka-rest:5.5.1
+#    image: confluentinc/cp-kafka-rest:latest
 #    depends_on:
 #      - zookeeper
 #      - kafka-broker
@@ -114,7 +146,7 @@ services:
 #      KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
 
   control-center:
-    image: confluentinc/cp-enterprise-control-center:5.5.1
+    image: confluentinc/cp-enterprise-control-center:latest
     hostname: control-center
     container_name: control-center
     depends_on:
@@ -134,7 +166,7 @@ services:
       PORT: 9021
 
   kafka-setup:
-    image: confluentinc/cp-kafka:5.1.1
+    image: confluentinc/cp-kafka:latest
     hostname: kafka-setup
     container_name: kafka-setup
     depends_on:
