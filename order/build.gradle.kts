@@ -10,11 +10,12 @@ dependencies {
 
     implementation(project(":commons"))
 
-    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
+    // FIXME: Change to micrometer
+//    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("mysql:mysql-connector-java")
+    runtimeOnly("com.mysql:mysql-connector-j")
 
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -25,12 +26,11 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
 
-    testImplementation("com.github.tomakehurst:wiremock-jre8:2.33.2")
+    testImplementation("com.github.tomakehurst:wiremock:3.0.0-beta-7")
 
     testRuntimeOnly("com.h2database:h2")
 }

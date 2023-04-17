@@ -1,7 +1,7 @@
 package automation.tag.domain
 
 import java.time.ZonedDateTime
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 class Tag(

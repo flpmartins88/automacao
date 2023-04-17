@@ -7,6 +7,15 @@ plugins {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.apache.avro:avro:1.11.1+")
+    implementation(kotlin("reflect"))
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
+
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 avro {

@@ -15,4 +15,3 @@ public class EventProperties {
         this.item = item;
     }
 }
-

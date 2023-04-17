@@ -81,7 +81,9 @@ class OrderControllerTest extends SpringBaseTest {
 
         mockMvc.perform(post("/orders").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(order)))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0].item").value(nonExistentItem))
+                .andExpect(jsonPath("$[0].error_code").value("ITEM_NOT_FOUND"));
     }
 
     @Test

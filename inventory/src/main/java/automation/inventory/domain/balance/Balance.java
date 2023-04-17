@@ -1,8 +1,6 @@
 package automation.inventory.domain.balance;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Version;
+import jakarta.persistence.*;
 
 /**
  * Representa o saldo do item no estoque

@@ -20,14 +20,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     implementation("org.springframework.kafka:spring-kafka")
-    implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "6.2.0") {
+    implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "7.3.3") {
         exclude(group = "org.slf4j")
         exclude(group = "log4j")
     }
 
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
-    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
+    // FIXME: Change to micrometer
+    //implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 

@@ -15,5 +15,10 @@ gradlePlugin {
             id = "automation.docker"
             implementationClass = "automation.gradle.DockerPlugin"
         }
+
+        register("spring.kafka") {
+            id = "spring.kafka"
+            implementationClass = "automation.gradle.SpringKafkaPlugin"
+        }
     }
 }

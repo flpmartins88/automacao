@@ -20,12 +20,13 @@ dependencies {
 
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.apache.kafka:kafka-streams")
-    implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "6.2.0") {
+    implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "7.3.3") {
         exclude(group = "org.slf4j")
         exclude(group = "log4j")
     }
 
-    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
+    // FIXME: Change to micrometer
+    //implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 

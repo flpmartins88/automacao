@@ -20,11 +20,13 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
-    runtimeOnly("mysql:mysql-connector-java")
+
+    // FIXME: Change to micrometer
+//    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
+    runtimeOnly("com.mysql:mysql-connector-j")
 
     implementation("org.springframework.kafka:spring-kafka")
-    implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "7.0.1") {
+    implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "7.3.3") {
         exclude(group = "org.slf4j")
         exclude(group = "log4j")
     }

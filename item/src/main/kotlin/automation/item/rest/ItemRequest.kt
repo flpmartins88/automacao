@@ -1,6 +1,6 @@
 package automation.item.rest
 
-import javax.validation.constraints.*
+import jakarta.validation.constraints.*
 
 class ItemRequest(
 

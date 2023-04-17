@@ -29,7 +29,7 @@ class ItemProducer(
      */
     private fun send(item: ItemEvent): Mono<SendResult<Long, ItemEvent>> =
         kafkaTemplate.send(itemTopicName, item.id, item)
-            .completable()
+//            .completable()
             .toMono()
 
     /**
@@ -40,7 +40,7 @@ class ItemProducer(
         send(item.toEvent(Type.NEW))
 
     /**
-     * Send an event abount an Item deleted
+     * Send an event about an Item deleted
      * @param item The item deleted
      */
     fun sendItemDeleted(item: Item): Mono<SendResult<Long, ItemEvent>> =

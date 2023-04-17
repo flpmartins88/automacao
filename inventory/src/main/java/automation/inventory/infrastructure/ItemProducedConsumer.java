@@ -39,7 +39,7 @@ public class ItemProducedConsumer {
             ack.acknowledge();
         } catch (ItemNotFoundException e) {
             log.error("Error adding '%d' to item '%s'".formatted(quantity, itemId), e);
-            ack.nack(1000);
+            ack.nack(Duration.ofSeconds(1));
         }
     }
 }

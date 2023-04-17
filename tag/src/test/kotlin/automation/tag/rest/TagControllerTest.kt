@@ -116,7 +116,7 @@ internal class TagControllerTest {
             }
         }
 
-        val timeToWait = Duration.ofSeconds(2).toMillis()
+        val timeToWait = Duration.ofSeconds(2)
 
         // sometimes the test fails because get the records return the first one only
         // the others aren't in kafka

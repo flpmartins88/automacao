@@ -5,6 +5,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.spring")
     id("automation.docker")
+//    id("spring.kafka")
 }
 
 configurations {
@@ -20,19 +21,14 @@ dependencies {
     implementation(project(":commons"))
 
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
-    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
-
+    // FIXME: Change to micrometer
+//    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-
     implementation("org.springframework.kafka:spring-kafka")
 
     implementation(group = "io.confluent", name = "kafka-avro-serializer", version = "7.2.1") {
@@ -46,7 +42,7 @@ dependencies {
 
     runtimeOnly("dev.miku:r2dbc-mysql:0.8.2.RELEASE")
 //    runtimeOnly("dev.miku:r2dbc-mysql")
-    runtimeOnly("mysql:mysql-connector-java")
+    runtimeOnly("com.mysql:mysql-connector-j")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")

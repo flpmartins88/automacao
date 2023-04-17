@@ -3,8 +3,8 @@ package automation.order.infrastructure.web;
 import automation.order.dto.ItemDto;
 import automation.order.dto.OrderDto;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

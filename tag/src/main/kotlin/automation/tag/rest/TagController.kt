@@ -6,7 +6,7 @@ import automation.tag.domain.TagService
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
+import jakarta.validation.Valid
 
 @RestController
 @RequestMapping("/tags", produces = [MediaType.APPLICATION_JSON_VALUE])

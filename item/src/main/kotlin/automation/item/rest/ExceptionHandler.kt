@@ -19,13 +19,13 @@ class ExceptionHandler {
     fun handleBaseException(exception: ServerWebInputException): ResponseEntity<Errors> {
         log.error("Erro de validação", exception)
 
-        val message = when(exception.status) {
+        val message = when(exception.statusCode) {
             HttpStatus.BAD_REQUEST -> "invalid body"
-            else -> exception.status.reasonPhrase
+            else -> exception.reason
         }
 
         val errors = Errors(listOf(
-            Error(exception.status.value().toString(), message)
+            Error(exception.statusCode.value().toString(), message)
         ))
 
         return ResponseEntity(errors, HttpStatus.NOT_FOUND)
@@ -50,7 +50,7 @@ class ExceptionHandler {
     @ExceptionHandler(Exception::class)
     fun handleAll(exception: Exception): ResponseEntity<Void> {
         log.error("Uncategorized error", exception)
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build<Void>()
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
     }
 
 }

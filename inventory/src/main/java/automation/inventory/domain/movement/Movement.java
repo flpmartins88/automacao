@@ -1,6 +1,6 @@
 package automation.inventory.domain.movement;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.ZonedDateTime;
 
 /**

@@ -1,6 +1,12 @@
 .gradle/
 .idea/
+.fleet/
 build/
 */out
 
 */bin/
+
+terraform/.terraform/
+terraform/.terraform*
+terraform/terraform*
+.sdkmanrc

@@ -6,3 +6,9 @@ security:
     client:
       client-id: client
       client-secret: top-secret
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

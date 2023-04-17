@@ -21,6 +21,16 @@ GRANT ALL
 
 --
 
+-- Order database
+CREATE SCHEMA IF NOT EXISTS order_db;
+
+CREATE USER IF NOT EXISTS 'order'@'%'
+    IDENTIFIED BY 'order';
+
+GRANT ALL
+    ON `order_db`.* TO 'order'@'%';
+--
+
 FLUSH PRIVILEGES;
 
 # CREATE TABLE tag_db.tag (
