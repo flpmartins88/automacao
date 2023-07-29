@@ -12,6 +12,7 @@ import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.data.r2dbc.AutoConfigureDataR2dbc
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
@@ -24,68 +25,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.reactive.function.BodyInserters
 import java.util.*
 
-private const val ITEM_TOPIC = "item"
-
-@ActiveProfiles("test")
-@SpringBootTest
-@AutoConfigureWebTestClient
-@AutoConfigureDataR2dbc
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@EmbeddedKafka(
-    topics = [ITEM_TOPIC],
-    partitions = 1,
-    controlledShutdown = false
-)
-class ItemControllerTest {
-
-    @Autowired
-    private lateinit var webTestClient: WebTestClient
-
-    @Autowired
-    private lateinit var itemRepository: ItemRepository
-
-    @Autowired
-    private lateinit var embeddedKafkaBroker: EmbeddedKafkaBroker
-
-    private lateinit var consumer: Consumer<SpecificRecord, SpecificRecord>
-
-    @BeforeAll
-    fun setUpConsumer() {
-        val consumerProps = KafkaTestUtils.consumerProps(
-            "test-local", "false",
-            this.embeddedKafkaBroker
-        )
-        consumerProps[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
-        consumerProps[KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG] = "mock://testUrl"
-        consumerProps[KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG] = "true"
-        consumerProps[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] =  KafkaAvroDeserializer::class.qualifiedName
-        consumerProps[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = KafkaAvroDeserializer::class.qualifiedName
-
-        val consumerFactory = DefaultKafkaConsumerFactory<SpecificRecord, SpecificRecord>(consumerProps)
-        consumer = consumerFactory.createConsumer()
-        embeddedKafkaBroker.consumeFromAnEmbeddedTopic(consumer, ITEM_TOPIC)
-    }
-
-    @AfterAll
-    fun finish() {
-        consumer.close()
-    }
-
-//    @BeforeAll
-//    fun setupDatabase() {
-//        val itemTable = """
-//                CREATE TABLE IF NOT EXISTS item (
-//                    id    BIGINT       AUTO_INCREMENT PRIMARY KEY,
-//                    code  VARCHAR(50)  NOT NULL,
-//                    name  VARCHAR(200) NOT NULL,
-//                    price BIGINT       NOT NULL
-//                );
-//            """.trimIndent()
-//
-//        connectionPool.create()
-//            .flatMap { c -> c.createStatement(itemTable).execute().toMono() }
-//            .block()
-//    }
+class ItemControllerTest : SpringBaseTest() {
 
     @Test
     fun shouldCreateItem() {
@@ -100,7 +40,7 @@ class ItemControllerTest {
             .jsonPath("$.name").isEqualTo(itemRequest.name!!)
             .jsonPath("$.price").isEqualTo(itemRequest.price!!)
 
-        val record = KafkaTestUtils.getSingleRecord(consumer, ITEM_TOPIC).value() as ItemEvent
+        val record = this.getEventFromConsumer<ItemEvent>(ITEM_TOPIC)
 
         Assertions.assertEquals(itemRequest.name, record.name, "Item name")
         Assertions.assertEquals(Type.NEW, record.type, "Item type")
