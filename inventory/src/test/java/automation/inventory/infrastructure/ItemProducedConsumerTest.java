@@ -30,17 +30,17 @@ class ItemProducedConsumerTest extends BaseSpringTest {
 
         var itemProducedEvent = ItemProducedEvent.newBuilder()
                 .setItemId(itemEvent.getId())
-                .setProductionId(UUID.randomUUID().toString())
+                .setProductionId(UUID.randomUUID())
                 .setQuantity(10)
                 .setEventDate(ZonedDateTime.now().toInstant())
                 .build();
 
         produce(itemProducedTopic, itemProducedEvent.getItemId(), itemProducedEvent);
 
-        await().until(() -> movementRepository.existsByProductionId(itemProducedEvent.getProductionId()));
-        await().until(() -> balanceRepository.findById(itemEvent.getId()).get().getQuantity() > 0);
+        await().until(() -> movementRepository.existsByProductionId(itemProducedEvent.getProductionId().toString()));
+        await().until(() -> balanceRepository.findById(itemEvent.getId()).orElseThrow().getQuantity() > 0);
 
-        var itemBalance = balanceRepository.findById(itemEvent.getId()).get();
+        var itemBalance = balanceRepository.findById(itemEvent.getId()).orElseThrow();
 
         assertEquals(10, itemBalance.getQuantity());
     }

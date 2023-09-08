@@ -3,19 +3,19 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
-    kotlin("jvm")           version "1.7.22" apply false
-    kotlin("plugin.spring") version "1.7.22" apply false
-    kotlin("plugin.jpa")    version "1.7.22" apply false
+    kotlin("jvm")           version "1.8.22" apply false
+    kotlin("plugin.spring") version "1.8.22" apply false
+    kotlin("plugin.jpa")    version "1.8.22" apply false
 
-    id("org.springframework.boot") version "3.0.5" apply false
-    id("io.spring.dependency-management") version "1.1.0" apply false
+    id("org.springframework.boot") version "3.1.2" apply false
+    id("io.spring.dependency-management") version "1.1.2" apply false
 }
 
 allprojects {
     group = "automation"
     version = "1.0.0"
 
-    extra["springCloudVersion"] = "2022.0.2"
+    extra["springCloudVersion"] = "2022.0.3"
 
     repositories {
         mavenCentral()
@@ -43,8 +43,8 @@ subprojects {
         // Fix java and kotlin versions to all subprojects
         if (pluginManager.hasPlugin("java")) {
             configure<JavaPluginExtension> {
-                this.sourceCompatibility = JavaVersion.VERSION_18
-                this.targetCompatibility = JavaVersion.VERSION_18
+                this.sourceCompatibility = JavaVersion.VERSION_19
+                this.targetCompatibility = JavaVersion.VERSION_19
             }
             tasks.withType<Test> {
                 useJUnitPlatform()
@@ -55,7 +55,7 @@ subprojects {
             tasks.withType<KotlinCompile> {
                 kotlinOptions {
                     freeCompilerArgs = listOf("-Xjsr305=strict")
-                    jvmTarget = "18"
+                    jvmTarget = "19"
                 }
             }
         }

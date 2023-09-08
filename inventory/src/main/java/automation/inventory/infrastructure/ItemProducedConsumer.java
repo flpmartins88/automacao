@@ -26,7 +26,7 @@ public class ItemProducedConsumer {
 
     @KafkaListener(topics = "${kafka.topics.item_produced}")
     public void consumeEvent(ConsumerRecord<String, ItemProducedEvent> record, Acknowledgment ack) {
-        var productionId = record.value().getProductionId();
+        var productionId = record.value().getProductionId().toString();
         var itemId = record.value().getItemId();
         var quantity = record.value().getQuantity();
         var productionDate = record.value().getEventDate().atZone(ZoneOffset.UTC);
