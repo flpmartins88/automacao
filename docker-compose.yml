@@ -1,5 +1,3 @@
-#version: "3.3"
-
 services:
 #  registry:
 #    image: registry:latest
@@ -10,8 +8,9 @@ services:
 #      REGISTRY_HTTP_SECRET: 12345678
 
   item-service:
-    build: item/build/docker
-    image: automation/item-service
+
+#    build: item/build/docker
+    image: item-service
     depends_on:
       - mysql
       - kafka-broker
@@ -91,9 +90,9 @@ services:
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2182
       KAFKA_ZOOKEEPER_SET_ACL: 'true'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:SASL_PLAINTEXT,TOKEN:SASL_SSL,SSL:SSL,CLEAR:PLAINTEXT
+      #KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:SASL_PLAINTEXT,TOKEN:SASL_SSL,SSL:SSL,CLEAR:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:9091,TOKEN://kafka1:10091,SSL://kafka1:11091,CLEAR://kafka1:12091
+      #KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:9091,TOKEN://kafka1:10091,SSL://kafka1:11091,CLEAR://kafka1:12091
 
       KAFKA_SUPER_USERS: User:admin;User:mds;User:superUser;User:ANONYMOUS
       KAFKA_LOG4J_LOGGERS: "kafka.authorizer.logger=INFO"
@@ -101,7 +100,7 @@ services:
 
       KAFKA_BROKER_ID: 1
       KAFKA_BROKER_RACK: "r1"
-      KAFKA_JMX_PORT: 9991
+      #KAFKA_JMX_PORT: 9991
 
       KAFKA_DELETE_TOPIC_ENABLE: 'true'
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'

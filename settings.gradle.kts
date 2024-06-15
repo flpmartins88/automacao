@@ -1,6 +1,7 @@
 rootProject.name = "automation"
 
-include("tag", "item", "production", "inventory", "commons", "auth", "order", "gateway")
+include("tag", "item", "production", "inventory", "commons", "order", "gateway")
+// removed projects: auth
 
 pluginManagement {
     repositories {
